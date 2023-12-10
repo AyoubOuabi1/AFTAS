@@ -1,9 +1,11 @@
 package com.ayoub.aftas.aftas.services;
 
 import com.ayoub.aftas.aftas.entities.Fish;
+import org.springframework.stereotype.Service;
 
 import java.util.List;
 
+@Service
 public interface FishService {
 
     Fish save(Fish fish);

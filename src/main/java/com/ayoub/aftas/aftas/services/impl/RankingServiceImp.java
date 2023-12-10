@@ -3,9 +3,11 @@ package com.ayoub.aftas.aftas.services.impl;
 import com.ayoub.aftas.aftas.entities.Ranking;
 import com.ayoub.aftas.aftas.respositories.RankingRepository;
 import com.ayoub.aftas.aftas.services.RankingService;
+import org.springframework.stereotype.Service;
 
 import java.util.List;
 
+@Service
 public class RankingServiceImp implements RankingService {
 
     RankingRepository rankingRepository;

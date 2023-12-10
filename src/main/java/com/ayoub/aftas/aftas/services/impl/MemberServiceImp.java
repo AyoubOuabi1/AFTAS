@@ -3,9 +3,11 @@ package com.ayoub.aftas.aftas.services.impl;
 import com.ayoub.aftas.aftas.entities.Member;
 import com.ayoub.aftas.aftas.respositories.MemberRepository;
 import com.ayoub.aftas.aftas.services.MemberService;
+import org.springframework.stereotype.Service;
 
 import java.util.List;
 
+@Service
 public class MemberServiceImp implements MemberService {
 
     MemberRepository memberRepository;

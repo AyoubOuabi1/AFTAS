@@ -3,9 +3,11 @@ package com.ayoub.aftas.aftas.services.impl;
 import com.ayoub.aftas.aftas.entities.Level;
 import com.ayoub.aftas.aftas.respositories.LevelRepository;
 import com.ayoub.aftas.aftas.services.LevelService;
+import org.springframework.stereotype.Service;
 
 import java.util.List;
 
+@Service
 public class LevelServiceImp implements LevelService {
 
     LevelRepository levelRepository;

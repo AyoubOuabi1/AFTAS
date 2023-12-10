@@ -1,9 +1,11 @@
 package com.ayoub.aftas.aftas.services;
 
 import com.ayoub.aftas.aftas.entities.Competition;
+import org.springframework.stereotype.Service;
 
 import java.util.List;
 
+@Service
 public interface CompetitionService {
 
     Competition save(Competition competition);

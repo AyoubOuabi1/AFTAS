@@ -3,9 +3,11 @@ package com.ayoub.aftas.aftas.services.impl;
 import com.ayoub.aftas.aftas.entities.Hunting;
 import com.ayoub.aftas.aftas.respositories.HuntingRepository;
 import com.ayoub.aftas.aftas.services.HuntingService;
+import org.springframework.stereotype.Service;
 
 import java.util.List;
 
+@Service
 public class HuntingServiceImp implements HuntingService {
 
     HuntingRepository huntingRepository;
