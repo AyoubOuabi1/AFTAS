@@ -1,5 +1,7 @@
 package com.ayoub.aftas.aftas.Config;
 
+import com.ayoub.aftas.aftas.Config.exceptions.Hunting.HuntingInternalServerError;
+import com.ayoub.aftas.aftas.Config.exceptions.Hunting.HuntingNotFoundException;
 import com.ayoub.aftas.aftas.Config.exceptions.competition.CompetitionInternalServerError;
 import com.ayoub.aftas.aftas.Config.exceptions.competition.CompetitionNotFoundException;
 import com.ayoub.aftas.aftas.Config.exceptions.fish.FishInternalServerError;
@@ -50,6 +52,17 @@ public class GlobalExceptionHandler {
     public ResponseEntity<String> handleFishInternalServerError(FishInternalServerError ex) {
         return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(ex.getMessage());
     }
+    ///////////Hunting////////////////////////////////////
+    @ExceptionHandler(HuntingNotFoundException.class)
+    @ResponseStatus(HttpStatus.NOT_FOUND)
+    public ResponseEntity<String> handleHuntingNotFoundException(HuntingNotFoundException ex) {
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(ex.getMessage());
+    }
 
+    @ExceptionHandler(HuntingInternalServerError.class)
+    @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
+    public ResponseEntity<String> handleHuntingInternalServerError(HuntingInternalServerError ex) {
+        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(ex.getMessage());
+    }
 
 }

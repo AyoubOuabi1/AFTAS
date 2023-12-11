@@ -33,7 +33,7 @@ public class FishController {
         try {
             return ResponseEntity.ok(fishService.save(fishDto));
         } catch (FishInternalServerError e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e.getMessage());
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
         }
     }
 

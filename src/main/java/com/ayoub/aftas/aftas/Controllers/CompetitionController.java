@@ -32,7 +32,7 @@ public class CompetitionController {
         try{
             return ResponseEntity.ok(competitionService.save(competitionDto));
         }catch (CompetitionInternalServerError e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e.getMessage());
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
         }
     }
 
