@@ -1,6 +1,7 @@
 package com.ayoub.aftas.aftas.services.impl;
 
-import com.ayoub.aftas.aftas.Config.exceptions.CompetitionNotFoundException;
+import com.ayoub.aftas.aftas.Config.exceptions.competition.CompetitionInternalServerError;
+import com.ayoub.aftas.aftas.Config.exceptions.competition.CompetitionNotFoundException;
 import com.ayoub.aftas.aftas.dto.CompetitionDto;
 import com.ayoub.aftas.aftas.entities.Competition;
 import com.ayoub.aftas.aftas.mappers.CompetitionMapper;
@@ -21,7 +22,7 @@ public class CompetitionServiceImp implements CompetitionService{
     }
 
     @Override
-    public CompetitionDto save(CompetitionDto competitionDto) throws CompetitionNotFoundException {
+    public CompetitionDto save(CompetitionDto competitionDto) throws CompetitionInternalServerError {
 
         List<CompetitionDto> competitionList = getAll();
         boolean isValid=competitionList.stream().anyMatch(competitionDto1 -> (
@@ -38,7 +39,7 @@ public class CompetitionServiceImp implements CompetitionService{
             Competition competition= CompetitionMapper.mapFromDtoWithoutId(competitionDto);
             return CompetitionMapper.mapToDto(competitionRepository.save(competition));
         }else {
-            throw new CompetitionNotFoundException("Competition with the same date already exists");
+            throw new CompetitionInternalServerError("Competition with the same date already exists");
         }
 
     }

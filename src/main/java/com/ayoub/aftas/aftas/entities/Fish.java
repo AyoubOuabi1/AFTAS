@@ -1,11 +1,18 @@
 package com.ayoub.aftas.aftas.entities;
 
 import jakarta.persistence.*;
+import lombok.*;
+import org.hibernate.validator.constraints.UniqueElements;
 
 import java.util.List;
 
 @Entity
 @Table(name = "fishes")
+@Setter
+@Getter
+@Builder
+@AllArgsConstructor
+@NoArgsConstructor
 public class Fish {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -15,7 +22,6 @@ public class Fish {
 
     private float averageWeight;
 
-    // Relationship with Level entity
     @OneToMany(mappedBy = "fish" ,cascade = CascadeType.ALL)
     private List<Level> levels;
 

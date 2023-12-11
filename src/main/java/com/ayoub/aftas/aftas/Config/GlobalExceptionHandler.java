@@ -1,7 +1,9 @@
 package com.ayoub.aftas.aftas.Config;
 
-import com.ayoub.aftas.aftas.Config.exceptions.CompetitionNotFoundException;
-import org.springframework.data.crossstore.ChangeSetPersister;
+import com.ayoub.aftas.aftas.Config.exceptions.competition.CompetitionInternalServerError;
+import com.ayoub.aftas.aftas.Config.exceptions.competition.CompetitionNotFoundException;
+import com.ayoub.aftas.aftas.Config.exceptions.fish.FishInternalServerError;
+import com.ayoub.aftas.aftas.Config.exceptions.fish.FishNotFoundException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.MethodArgumentNotValidException;
@@ -24,16 +26,29 @@ public class GlobalExceptionHandler {
 
         return ResponseEntity.badRequest().body(errors);
     }
-
+    ////////Competition///////////////////////////////////
     @ExceptionHandler(CompetitionNotFoundException.class)
     @ResponseStatus(HttpStatus.NOT_FOUND)
     public ResponseEntity<String> handleCompetitionNotFoundException(CompetitionNotFoundException ex) {
         return ResponseEntity.status(HttpStatus.NOT_FOUND).body(ex.getMessage());
     }
-    @ExceptionHandler(Exception.class)
+    @ExceptionHandler(CompetitionInternalServerError.class)
     @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
-    public ResponseEntity<String> handleGeneralException(Exception ex) {
-        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Internal Server Error");
+    public ResponseEntity<String> handleCompetitionInternalServerError(CompetitionInternalServerError ex) {
+        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(ex.getMessage());
+    }
+
+    ///////////Fish////////////////////////////////////
+    @ExceptionHandler(FishNotFoundException.class)
+    @ResponseStatus(HttpStatus.NOT_FOUND)
+    public ResponseEntity<String> handleFishNotFoundException(CompetitionNotFoundException ex) {
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(ex.getMessage());
+    }
+
+    @ExceptionHandler(FishInternalServerError.class)
+    @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
+    public ResponseEntity<String> handleFishInternalServerError(FishInternalServerError ex) {
+        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(ex.getMessage());
     }
 
 

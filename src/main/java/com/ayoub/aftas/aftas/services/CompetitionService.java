@@ -1,8 +1,7 @@
 package com.ayoub.aftas.aftas.services;
 
-import com.ayoub.aftas.aftas.Config.exceptions.CompetitionNotFoundException;
+import com.ayoub.aftas.aftas.Config.exceptions.competition.CompetitionNotFoundException;
 import com.ayoub.aftas.aftas.dto.CompetitionDto;
-import com.ayoub.aftas.aftas.entities.Competition;
 import org.springframework.stereotype.Service;
 
 import java.util.List;

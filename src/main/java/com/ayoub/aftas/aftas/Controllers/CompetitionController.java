@@ -1,9 +1,9 @@
 package com.ayoub.aftas.aftas.Controllers;
 
 import com.ayoub.aftas.aftas.Config.Constant;
-import com.ayoub.aftas.aftas.Config.exceptions.CompetitionNotFoundException;
+import com.ayoub.aftas.aftas.Config.exceptions.competition.CompetitionInternalServerError;
+import com.ayoub.aftas.aftas.Config.exceptions.competition.CompetitionNotFoundException;
 import com.ayoub.aftas.aftas.dto.CompetitionDto;
-import com.ayoub.aftas.aftas.entities.Competition;
 import com.ayoub.aftas.aftas.services.CompetitionService;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
@@ -31,8 +31,8 @@ public class CompetitionController {
     public ResponseEntity<?> save(@Valid  @RequestBody CompetitionDto competitionDto){
         try{
             return ResponseEntity.ok(competitionService.save(competitionDto));
-        }catch (CompetitionNotFoundException e) {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
+        }catch (CompetitionInternalServerError e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e.getMessage());
         }
     }
 
@@ -40,7 +40,7 @@ public class CompetitionController {
     public ResponseEntity<?> update(@Valid @RequestBody CompetitionDto competitionDto){
         try{
             return ResponseEntity.ok(competitionService.save(competitionDto));
-        }catch (CompetitionNotFoundException e) {
+        }catch (CompetitionInternalServerError e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e.getMessage());
         }    }
 
