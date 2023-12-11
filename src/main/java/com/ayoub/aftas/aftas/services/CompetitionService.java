@@ -1,5 +1,7 @@
 package com.ayoub.aftas.aftas.services;
 
+import com.ayoub.aftas.aftas.Config.exceptions.CompetitionNotFoundException;
+import com.ayoub.aftas.aftas.dto.CompetitionDto;
 import com.ayoub.aftas.aftas.entities.Competition;
 import org.springframework.stereotype.Service;
 
@@ -8,14 +10,14 @@ import java.util.List;
 @Service
 public interface CompetitionService {
 
-    Competition save(Competition competition);
+    CompetitionDto save(CompetitionDto competition) throws CompetitionNotFoundException;
 
-    Competition update(Competition competition);
+    CompetitionDto update(CompetitionDto competition) throws CompetitionNotFoundException;
 
-    void delete(Competition competition);
+    void delete(Long id) throws CompetitionNotFoundException;
 
-    List<Competition> getAll();
+    List<CompetitionDto> getAll();
 
-    Competition getById(Long id);
+    CompetitionDto getById(Long id) throws CompetitionNotFoundException;
 
 }
