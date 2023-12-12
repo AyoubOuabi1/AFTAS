@@ -11,10 +11,7 @@ import org.springframework.web.bind.annotation.RestController;
 @SpringBootApplication
 public class AftasApplication {
 
-    @GetMapping("")
-    public String get() {
-        return "aftas";
-    }
+
     public static void main(String[] args) {
         SpringApplication.run(AftasApplication.class, args);
     }

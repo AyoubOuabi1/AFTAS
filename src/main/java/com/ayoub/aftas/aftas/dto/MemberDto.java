@@ -24,4 +24,6 @@ public class MemberDto {
 
     private String nationality;
     private String identityDocument;
+    private String identityNumber;
+
 }

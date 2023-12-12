@@ -1,12 +1,23 @@
 package com.ayoub.aftas.aftas.entities;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import jakarta.annotation.Nullable;
 import jakarta.persistence.*;
+import lombok.*;
+
+import java.util.List;
 
 @Entity
 @Table(name = "levels")
+@Getter
+@Setter
+@Builder
+@AllArgsConstructor
+@NoArgsConstructor
 public class Level {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Nullable
     private Long id;
 
     private Integer code;
@@ -15,10 +26,8 @@ public class Level {
 
     private Integer points;
 
-    // Relationship with Fish entity
-    @ManyToOne
-    @JoinColumn(name = "fish_id")
-    private Fish fish;
+    @JsonIgnore
+    @OneToMany(mappedBy = "level" ,cascade = CascadeType.ALL)
+    private List<Fish> fishs;
 
-    // Getters and setters
 }

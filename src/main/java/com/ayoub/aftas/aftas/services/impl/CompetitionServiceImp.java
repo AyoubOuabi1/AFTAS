@@ -12,6 +12,7 @@ import org.springframework.stereotype.Service;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.logging.Logger;
 
 @Service
 public class CompetitionServiceImp implements CompetitionService{
@@ -30,13 +31,14 @@ public class CompetitionServiceImp implements CompetitionService{
         );
         if(!isValid){
             String code=competitionDto.getLocation()
-                    .substring(0,2)
+                    .substring(0,3)
                     .concat("-")
                     .concat(competitionDto.getDate()
                             .toString()
                             );
             competitionDto.setCode(code);
             Competition competition= CompetitionMapper.mapFromDtoWithoutId(competitionDto);
+            competition.setStatus("open");
             return CompetitionMapper.mapToDto(competitionRepository.save(competition));
         }else {
             throw new CompetitionInternalServerError("Competition with the same date already exists");

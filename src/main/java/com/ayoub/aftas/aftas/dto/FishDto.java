@@ -2,6 +2,7 @@ package com.ayoub.aftas.aftas.dto;
 
 import jakarta.annotation.Nullable;
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Positive;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -23,4 +24,7 @@ public class FishDto {
 
     @Positive(message = "Average Weight must be a positive number")
     private float averageWeight;
+
+    @NotNull(message = "Level ID cannot be null")
+    Long levelId;
 }

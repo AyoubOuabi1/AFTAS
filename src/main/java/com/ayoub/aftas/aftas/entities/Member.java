@@ -1,6 +1,7 @@
 package com.ayoub.aftas.aftas.entities;
 
 import com.ayoub.aftas.aftas.dto.MemberDto;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -29,47 +30,18 @@ public class Member {
     private LocalDate accessionDate;
 
     private String nationality;
+
     private String identityDocument;
 
+    private String identityNumber;
+
+    @JsonIgnore
     @OneToMany(mappedBy = "member",cascade = CascadeType.ALL)
     private List<Ranking> rankings;
 
+    @JsonIgnore
     @OneToMany(mappedBy = "member",cascade = CascadeType.ALL)
     private List<Hunting> hunts;
-    // Getters and setters
 
-    public static MemberDto toDto(Member member){
-        return MemberDto.builder()
-                .id(member.getId())
-                .num(member.getNum())
-                .name(member.getName())
-                .familyName(member.getFamilyName())
-                .accessionDate(member.getAccessionDate())
-                .nationality(member.getNationality())
-                .identityDocument(member.getIdentityDocument())
-                .build();
-    }
 
-    public static Member getMember(MemberDto memberDto){
-        return Member.builder()
-                .id(memberDto.getId())
-                .num(memberDto.getNum())
-                .name(memberDto.getName())
-                .familyName(memberDto.getFamilyName())
-                .accessionDate(memberDto.getAccessionDate())
-                .nationality(memberDto.getNationality())
-                .identityDocument(memberDto.getIdentityDocument())
-                .build();
-    }
-
-    public static Member getMemberWithoutId(MemberDto memberDto){
-        return Member.builder()
-                .num(memberDto.getNum())
-                .name(memberDto.getName())
-                .familyName(memberDto.getFamilyName())
-                .accessionDate(memberDto.getAccessionDate())
-                .nationality(memberDto.getNationality())
-                .identityDocument(memberDto.getIdentityDocument())
-                .build();
-    }
 }

@@ -3,7 +3,7 @@ package com.ayoub.aftas.aftas.Controllers;
 import com.ayoub.aftas.aftas.Config.Constant;
 import com.ayoub.aftas.aftas.dto.MemberDto;
 import com.ayoub.aftas.aftas.entities.Member;
-import com.ayoub.aftas.aftas.respositories.MemberRepository;
+import com.ayoub.aftas.aftas.mappers.MemberMapper;
 import com.ayoub.aftas.aftas.services.MemberService;
 import org.springframework.web.bind.annotation.*;
 
@@ -20,30 +20,30 @@ public class MemberController {
     }
 
     @GetMapping("")
-    public List<Member> get(){
+    public List<MemberDto> get(){
         return memberService.getAll();
     }
 
     @PostMapping("")
     public Member save(@RequestBody  MemberDto memberDto){
-        Member member = Member.getMemberWithoutId(memberDto);
+        Member member = MemberMapper.mapFromDtoWithOutId(memberDto);
         return memberService.save(member);
     }
 
     @PutMapping("/{id}")
     public Member update(@RequestBody MemberDto memberDto){
-        Member member = Member.getMember(memberDto);
+        Member member = MemberMapper.mapFromDto(memberDto);
         return memberService.update(member);
     }
 
     @DeleteMapping("/{id}")
     public void delete(@PathVariable Long id){
-        Member member = memberService.getById(id);
+        Member member = MemberMapper.mapFromDto(memberService.getById(id));
         memberService.delete(member);
     }
 
     @GetMapping("/{id}")
-    public Member getById(@PathVariable Long id){
+    public MemberDto getById(@PathVariable Long id){
         return memberService.getById(id);
     }
 }

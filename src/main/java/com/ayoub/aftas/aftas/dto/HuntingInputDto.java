@@ -15,8 +15,6 @@ import lombok.NoArgsConstructor;
 public class HuntingInputDto {
     @Nullable
     private Long id;
-    @Positive(message = "number of fish must be greater or equal to 0")
-    private Integer numberOfFish;
 
     @NotNull(message = "Member ID cannot be null")
     private Long memberId;

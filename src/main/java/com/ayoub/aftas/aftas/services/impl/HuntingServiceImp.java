@@ -5,14 +5,14 @@ import com.ayoub.aftas.aftas.Config.exceptions.Hunting.HuntingNotFoundException;
 import com.ayoub.aftas.aftas.Config.exceptions.fish.FishNotFoundException;
 import com.ayoub.aftas.aftas.dto.HuntingDto;
 import com.ayoub.aftas.aftas.dto.HuntingInputDto;
-import com.ayoub.aftas.aftas.entities.Fish;
 import com.ayoub.aftas.aftas.entities.Hunting;
 import com.ayoub.aftas.aftas.mappers.CompetitionMapper;
 import com.ayoub.aftas.aftas.mappers.FishMapper;
 import com.ayoub.aftas.aftas.mappers.HuntingMapper;
-import com.ayoub.aftas.aftas.respositories.FishRepository;
+import com.ayoub.aftas.aftas.mappers.MemberMapper;
 import com.ayoub.aftas.aftas.respositories.HuntingRepository;
 import com.ayoub.aftas.aftas.services.CompetitionService;
+import com.ayoub.aftas.aftas.services.FishService;
 import com.ayoub.aftas.aftas.services.HuntingService;
 import com.ayoub.aftas.aftas.services.MemberService;
 import org.springframework.stereotype.Service;
@@ -27,16 +27,16 @@ public class HuntingServiceImp implements HuntingService {
     HuntingRepository huntingRepository;
     CompetitionService competitionService;
     MemberService memberService;
-    FishRepository fishRepository;
+    FishService fishService;
 
     public HuntingServiceImp(HuntingRepository huntingRepository,
                              CompetitionService competitionService,
                              MemberService memberService,
-                             FishRepository fishRepository){
+                             FishService fishService){
         this.huntingRepository = huntingRepository;
         this.competitionService = competitionService;
         this.memberService = memberService;
-        this.fishRepository = fishRepository;
+        this.fishService = fishService;
     }
 
     @Override
@@ -53,13 +53,14 @@ public class HuntingServiceImp implements HuntingService {
             return HuntingMapper.mapToDto(huntingRepository.save(existHunt));
         }else {
             Hunting hunting=Hunting.builder()
-                    .numberOfFish(huntingInputDto.getNumberOfFish())
+                    .numberOfFish(1)
                     .competition(
                             CompetitionMapper.mapFromDto(
                                     competitionService.getById(huntingInputDto.getCompetitionId())
                             )
                     )
-                    .member(memberService.getById(huntingInputDto.getMemberId()))
+                    .member(MemberMapper.mapFromDto(memberService.getById(huntingInputDto.getMemberId())))
+                    .fish(FishMapper.mapFromDto(fishService.getById(huntingInputDto.getFishId())))
                     .build();
             return HuntingMapper.mapToDto(huntingRepository.save(hunting));
         }
@@ -70,13 +71,13 @@ public class HuntingServiceImp implements HuntingService {
     public HuntingDto update(HuntingInputDto huntingInputDto) {
         try{
             Hunting hunting=Hunting.builder()
-                    .numberOfFish(huntingInputDto.getNumberOfFish())
+                    .numberOfFish(1)
                     .competition(
                             CompetitionMapper.mapFromDto(
                                     competitionService.getById(huntingInputDto.getCompetitionId())
                             )
                     )
-                    .member(memberService.getById(huntingInputDto.getMemberId()))
+                    .member(MemberMapper.mapFromDto(memberService.getById(huntingInputDto.getMemberId())))
                     .build();
             return HuntingMapper.mapToDto(huntingRepository.save(hunting));
         }catch (Exception e){

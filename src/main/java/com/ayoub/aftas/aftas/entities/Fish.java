@@ -1,5 +1,6 @@
 package com.ayoub.aftas.aftas.entities;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.*;
 import org.hibernate.validator.constraints.UniqueElements;
@@ -22,9 +23,12 @@ public class Fish {
 
     private float averageWeight;
 
-    @OneToMany(mappedBy = "fish" ,cascade = CascadeType.ALL)
-    private List<Level> levels;
+    @JsonIgnore
+    @ManyToOne
+    @JoinColumn(name = "level_id")
+    private Level level;
 
+    @JsonIgnore
     @OneToMany(mappedBy = "fish" ,cascade = CascadeType.ALL)
     private List<Hunting> hunts;
  }

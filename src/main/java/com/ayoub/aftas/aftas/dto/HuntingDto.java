@@ -25,5 +25,6 @@ public class HuntingDto {
     private Member member;
 
     private Competition competition;
+
     private Fish fish;
 }

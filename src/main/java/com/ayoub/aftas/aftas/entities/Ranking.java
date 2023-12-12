@@ -15,15 +15,12 @@ public class Ranking {
 
     private Integer score;
 
-    // Relationship with Member entity
-    @ManyToOne
+     @ManyToOne
     @JoinColumn(name = "member_id")
     private Member member;
 
-    // Relationship with Competition entity
-    @ManyToOne
+     @ManyToOne
     @JoinColumn(name = "competition_id")
     private Competition competition;
 
-    // Getters and setters
-}
+ }

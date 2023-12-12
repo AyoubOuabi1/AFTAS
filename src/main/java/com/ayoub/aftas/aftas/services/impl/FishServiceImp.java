@@ -6,6 +6,7 @@ import com.ayoub.aftas.aftas.entities.Fish;
 import com.ayoub.aftas.aftas.mappers.FishMapper;
 import com.ayoub.aftas.aftas.respositories.FishRepository;
 import com.ayoub.aftas.aftas.services.FishService;
+import com.ayoub.aftas.aftas.services.LevelService;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -16,14 +17,18 @@ import java.util.Optional;
 public class FishServiceImp implements FishService {
 
     private final FishRepository fishRepository;
+    LevelService levelService;
 
-    public FishServiceImp(FishRepository fishRepository) {
+    public FishServiceImp(FishRepository fishRepository,LevelService levelService) {
         this.fishRepository = fishRepository;
+        this.levelService = levelService;
     }
 
     @Override
     public FishDto save(FishDto fishDto)  {
         Fish fish = FishMapper.mapFromDtoWithOutId(fishDto);
+       // fish.setLevel(levelService.getById(fishDto.getId()));
+        fish.setLevel(levelService.getById(fishDto.getLevelId()));
         return FishMapper.mapToDto(fishRepository.save(fish));
     }
 
@@ -34,6 +39,7 @@ public class FishServiceImp implements FishService {
 
             if (existingFishDto != null) {
                 Fish fishToUpdate = FishMapper.mapFromDto(fishDto);
+                fishToUpdate.setLevel(levelService.getById(fishDto.getId()));
                 return FishMapper.mapToDto(fishRepository.save(fishToUpdate));
             } else {
                 throw new FishNotFoundException("Fish not found with ID: " + fishDto.getId());

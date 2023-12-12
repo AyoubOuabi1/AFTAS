@@ -10,6 +10,7 @@ public class FishMapper {
                 .id(fish.getId())
                 .name(fish.getName())
                 .averageWeight(fish.getAverageWeight())
+                .levelId(fish.getLevel().getId())
                 .build();
     }
 

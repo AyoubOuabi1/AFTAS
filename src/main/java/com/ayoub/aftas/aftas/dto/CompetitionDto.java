@@ -17,7 +17,7 @@ public class CompetitionDto {
     @Nullable
     private Long id;
 
-    @NotBlank(message = "Code cannot be blank")
+    @Nullable
     private String code;
 
     @NotNull(message = "Date cannot be null")
@@ -36,7 +36,7 @@ public class CompetitionDto {
     @NotBlank(message = "Location cannot be blank")
     private String location;
 
-    @NotBlank(message = "Status cannot be blank")
+    @Nullable
     private String status;
 
     @Positive(message = "Amount must be a positive number")
