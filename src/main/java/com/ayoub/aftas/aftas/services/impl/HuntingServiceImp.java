@@ -5,16 +5,16 @@ import com.ayoub.aftas.aftas.Config.exceptions.Hunting.HuntingNotFoundException;
 import com.ayoub.aftas.aftas.Config.exceptions.fish.FishNotFoundException;
 import com.ayoub.aftas.aftas.dto.HuntingDto;
 import com.ayoub.aftas.aftas.dto.HuntingInputDto;
+import com.ayoub.aftas.aftas.entities.Fish;
 import com.ayoub.aftas.aftas.entities.Hunting;
+import com.ayoub.aftas.aftas.entities.Ranking;
 import com.ayoub.aftas.aftas.mappers.CompetitionMapper;
 import com.ayoub.aftas.aftas.mappers.FishMapper;
 import com.ayoub.aftas.aftas.mappers.HuntingMapper;
 import com.ayoub.aftas.aftas.mappers.MemberMapper;
 import com.ayoub.aftas.aftas.respositories.HuntingRepository;
-import com.ayoub.aftas.aftas.services.CompetitionService;
-import com.ayoub.aftas.aftas.services.FishService;
-import com.ayoub.aftas.aftas.services.HuntingService;
-import com.ayoub.aftas.aftas.services.MemberService;
+import com.ayoub.aftas.aftas.respositories.RankingRepository;
+import com.ayoub.aftas.aftas.services.*;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -29,40 +29,58 @@ public class HuntingServiceImp implements HuntingService {
     MemberService memberService;
     FishService fishService;
 
+    RankingService rankingService;
+
     public HuntingServiceImp(HuntingRepository huntingRepository,
                              CompetitionService competitionService,
                              MemberService memberService,
-                             FishService fishService){
+                             FishService fishService,
+                             RankingService rankingService){
         this.huntingRepository = huntingRepository;
         this.competitionService = competitionService;
         this.memberService = memberService;
         this.fishService = fishService;
+        this.rankingService = rankingService;
     }
 
     @Override
     public HuntingDto save(HuntingInputDto huntingInputDto) {
-        Hunting existHunt=huntingRepository.
-                findByMember_IdAndCompetition_IdAndFish_Id
-                        (huntingInputDto.getMemberId(),
-                                huntingInputDto.getCompetitionId(),
-                                huntingInputDto.getFishId()
-                );
-        if(existHunt!=null){
-            int numberOfFish=existHunt.getNumberOfFish()+1;
-            existHunt.setNumberOfFish(numberOfFish);
-            return HuntingMapper.mapToDto(huntingRepository.save(existHunt));
+        Ranking ranking=rankingService.getRankingByCompetition_idAndMember_id(
+                huntingInputDto.getCompetitionId(),
+                huntingInputDto.getMemberId()
+        );
+        Fish fish=FishMapper.mapFromDto(fishService.getById(huntingInputDto.getFishId()));
+       // Fish fish=fishService.getFishById(huntingInputDto.getFishId());
+        if(huntingInputDto.getAverageWeight()>=fish.getAverageWeight()){
+            Hunting existHunt=huntingRepository.
+                    findByMember_IdAndCompetition_IdAndFish_Id
+                            (huntingInputDto.getMemberId(),
+                                    huntingInputDto.getCompetitionId(),
+                                    fish.getId()
+                            );
+            if(existHunt!=null){
+                int numberOfFish=existHunt.getNumberOfFish()+1;
+                existHunt.setNumberOfFish(numberOfFish);
+
+                ranking.setScore(ranking.getScore()+fish.getLevel().getPoints());
+                return HuntingMapper.mapToDto(huntingRepository.save(existHunt));
+            }else {
+                Hunting hunting=Hunting.builder()
+                        .numberOfFish(1)
+                        .competition(
+                                CompetitionMapper.mapFromDto(
+                                        competitionService.getById(huntingInputDto.getCompetitionId())
+                                )
+                        )
+                        .member(MemberMapper.mapFromDto(memberService.getById(huntingInputDto.getMemberId())))
+                        .fish(fish)
+                        .build();
+                ranking.setScore(ranking.getScore()+fish.getLevel().getPoints());
+                return HuntingMapper.mapToDto(huntingRepository.save(hunting));
+            }
         }else {
-            Hunting hunting=Hunting.builder()
-                    .numberOfFish(1)
-                    .competition(
-                            CompetitionMapper.mapFromDto(
-                                    competitionService.getById(huntingInputDto.getCompetitionId())
-                            )
-                    )
-                    .member(MemberMapper.mapFromDto(memberService.getById(huntingInputDto.getMemberId())))
-                    .fish(FishMapper.mapFromDto(fishService.getById(huntingInputDto.getFishId())))
-                    .build();
-            return HuntingMapper.mapToDto(huntingRepository.save(hunting));
+
+            throw new HuntingInternalServerError("Cannot add this hunting record; the fish must have the same or greater weight than the currently selected fish");
         }
 
     }

@@ -1,11 +1,15 @@
 package com.ayoub.aftas.aftas.entities;
 
 import jakarta.persistence.*;
+import lombok.*;
 
 @Entity
-
 @Table(name = "rankings")
-
+@Builder
+@Setter
+@Getter
+@AllArgsConstructor
+@NoArgsConstructor
 public class Ranking {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -15,12 +19,13 @@ public class Ranking {
 
     private Integer score;
 
-     @ManyToOne
+    @ManyToOne
     @JoinColumn(name = "member_id")
     private Member member;
 
-     @ManyToOne
+    @ManyToOne
     @JoinColumn(name = "competition_id")
+
     private Competition competition;
 
  }

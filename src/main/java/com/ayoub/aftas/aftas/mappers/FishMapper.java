@@ -11,6 +11,7 @@ public class FishMapper {
                 .name(fish.getName())
                 .averageWeight(fish.getAverageWeight())
                 .levelId(fish.getLevel().getId())
+                .level(fish.getLevel())
                 .build();
     }
 
@@ -19,6 +20,7 @@ public class FishMapper {
                 .id(fish.getId())
                 .name(fish.getName())
                 .averageWeight(fish.getAverageWeight())
+                .level(fish.getLevel())
                 .build();
     }
 

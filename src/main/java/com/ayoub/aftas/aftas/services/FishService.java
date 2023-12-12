@@ -14,4 +14,5 @@ public interface FishService {
     void delete(Long id);
     List<FishDto> getAll();
     FishDto getById(Long id);
+    Fish getFishById(Long id);
 }

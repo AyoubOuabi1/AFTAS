@@ -22,7 +22,10 @@ public class HuntingInputDto {
     @NotNull(message = "Competition ID cannot be null")
     private Long competitionId;
 
-    @NotNull(message = "Competition ID cannot be null")
+    @NotNull(message = "Fish ID cannot be null")
     private Long fishId;
+
+    @Positive(message = "Average Weight must be a positive number")
+    private float averageWeight;
 
 }

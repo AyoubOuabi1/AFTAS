@@ -6,6 +6,7 @@ import com.ayoub.aftas.aftas.Config.exceptions.competition.CompetitionInternalSe
 import com.ayoub.aftas.aftas.Config.exceptions.competition.CompetitionNotFoundException;
 import com.ayoub.aftas.aftas.Config.exceptions.fish.FishInternalServerError;
 import com.ayoub.aftas.aftas.Config.exceptions.fish.FishNotFoundException;
+import com.ayoub.aftas.aftas.Config.exceptions.ranking.RankingInternalServerError;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.MethodArgumentNotValidException;
@@ -65,4 +66,11 @@ public class GlobalExceptionHandler {
         return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(ex.getMessage());
     }
 
+
+    //////Ranking
+    @ExceptionHandler(RankingInternalServerError.class)
+    @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
+    public ResponseEntity<String> handleRankingInternalServerError(RankingInternalServerError ex) {
+        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(ex.getMessage());
+    }
 }

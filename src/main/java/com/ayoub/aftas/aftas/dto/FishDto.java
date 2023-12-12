@@ -1,5 +1,6 @@
 package com.ayoub.aftas.aftas.dto;
 
+import com.ayoub.aftas.aftas.entities.Level;
 import jakarta.annotation.Nullable;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
@@ -27,4 +28,7 @@ public class FishDto {
 
     @NotNull(message = "Level ID cannot be null")
     Long levelId;
+
+    @Nullable
+    Level level;
 }

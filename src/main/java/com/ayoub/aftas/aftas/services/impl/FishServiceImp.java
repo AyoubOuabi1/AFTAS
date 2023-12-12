@@ -92,4 +92,9 @@ public class FishServiceImp implements FishService {
 
         return null;
     }
+
+    @Override
+    public Fish getFishById(Long id) {
+        return fishRepository.findById(id).get();
+    }
 }
