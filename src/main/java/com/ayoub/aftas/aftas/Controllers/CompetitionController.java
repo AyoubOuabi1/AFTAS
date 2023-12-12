@@ -1,8 +1,8 @@
 package com.ayoub.aftas.aftas.Controllers;
 
 import com.ayoub.aftas.aftas.Config.Constant;
-import com.ayoub.aftas.aftas.Config.exceptions.competition.CompetitionInternalServerError;
-import com.ayoub.aftas.aftas.Config.exceptions.competition.CompetitionNotFoundException;
+import com.ayoub.aftas.aftas.Config.exceptions.InternalServerError;
+import com.ayoub.aftas.aftas.Config.exceptions.NotFoundException;
 import com.ayoub.aftas.aftas.dto.CompetitionDto;
 import com.ayoub.aftas.aftas.services.CompetitionService;
 import jakarta.servlet.http.HttpServletResponse;
@@ -31,7 +31,7 @@ public class CompetitionController {
     public ResponseEntity<?> save(@Valid  @RequestBody CompetitionDto competitionDto){
         try{
             return ResponseEntity.ok(competitionService.save(competitionDto));
-        }catch (CompetitionInternalServerError e) {
+        }catch (InternalServerError e) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
         }
     }
@@ -40,7 +40,7 @@ public class CompetitionController {
     public ResponseEntity<?> update(@Valid @RequestBody CompetitionDto competitionDto){
         try{
             return ResponseEntity.ok(competitionService.save(competitionDto));
-        }catch (CompetitionInternalServerError e) {
+        }catch (InternalServerError e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e.getMessage());
         }    }
 
@@ -49,7 +49,7 @@ public class CompetitionController {
         try {
             competitionService.delete(id);
             return ResponseEntity.ok("competition successfully deleted");
-        }catch (CompetitionNotFoundException e) {
+        }catch (NotFoundException e) {
             return ResponseEntity.status(HttpServletResponse.SC_NOT_FOUND).body(e.getMessage());
         }
     }
@@ -58,7 +58,7 @@ public class CompetitionController {
     public ResponseEntity<?>  get(@Valid @PathVariable Long id){
          try {
              return ResponseEntity.ok(competitionService.getById(id));
-        }catch (CompetitionNotFoundException e) {
+        }catch (NotFoundException e) {
             return ResponseEntity.status(HttpServletResponse.SC_NOT_FOUND).body(e.getMessage());
         }
     }

@@ -1,8 +1,8 @@
 package com.ayoub.aftas.aftas.Controllers;
 
 import com.ayoub.aftas.aftas.Config.Constant;
-import com.ayoub.aftas.aftas.Config.exceptions.fish.FishInternalServerError;
-import com.ayoub.aftas.aftas.Config.exceptions.fish.FishNotFoundException;
+import com.ayoub.aftas.aftas.Config.exceptions.InternalServerError;
+import com.ayoub.aftas.aftas.Config.exceptions.NotFoundException;
 import com.ayoub.aftas.aftas.dto.FishDto;
 import com.ayoub.aftas.aftas.services.FishService;
 import jakarta.servlet.http.HttpServletResponse;
@@ -32,7 +32,7 @@ public class FishController {
     public ResponseEntity<?> save(@Valid @RequestBody FishDto fishDto) {
         try {
             return ResponseEntity.ok(fishService.save(fishDto));
-        } catch (FishInternalServerError e) {
+        } catch (InternalServerError e) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
         }
     }
@@ -41,7 +41,7 @@ public class FishController {
     public ResponseEntity<?> update(@Valid @RequestBody FishDto fishDto) {
         try {
             return ResponseEntity.ok(fishService.update(fishDto));
-        } catch (FishInternalServerError e) {
+        } catch (InternalServerError e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e.getMessage());
         }
     }
@@ -51,7 +51,7 @@ public class FishController {
         try {
             fishService.delete(id);
             return ResponseEntity.ok("Fish successfully deleted");
-        } catch (FishNotFoundException e) {
+        } catch (NotFoundException e) {
             return ResponseEntity.status(HttpServletResponse.SC_NOT_FOUND).body(e.getMessage());
         }
     }
@@ -60,7 +60,7 @@ public class FishController {
     public ResponseEntity<?> get(@Valid @PathVariable Long id) {
         try {
             return ResponseEntity.ok(fishService.getById(id));
-        } catch (FishNotFoundException e) {
+        } catch (NotFoundException e) {
             return ResponseEntity.status(HttpServletResponse.SC_NOT_FOUND).body(e.getMessage());
         }
     }

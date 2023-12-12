@@ -1,8 +1,10 @@
 package com.ayoub.aftas.aftas.Controllers;
 
 import com.ayoub.aftas.aftas.Config.Constant;
-import com.ayoub.aftas.aftas.Config.exceptions.ranking.RankingInternalServerError;
+import com.ayoub.aftas.aftas.Config.exceptions.InternalServerError;
+import com.ayoub.aftas.aftas.dto.MemberDto;
 import com.ayoub.aftas.aftas.dto.RankingDto;
+import com.ayoub.aftas.aftas.entities.Member;
 import com.ayoub.aftas.aftas.entities.Ranking;
 import com.ayoub.aftas.aftas.services.RankingService;
 import org.springframework.http.HttpStatus;
@@ -30,9 +32,15 @@ public class RankingController {
     public ResponseEntity<?> save(@RequestBody RankingDto rankingDto ){
         try{
             return ResponseEntity.ok(rankingService.save(rankingDto));
-        }catch(RankingInternalServerError  e){
+        }catch(InternalServerError e){
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e.getMessage());
         }
     }
+
+    @GetMapping("/competition/{competitionId}")
+    public List<MemberDto> getWinners(@PathVariable Long competitionId){
+        return rankingService.getWinners(competitionId);
+    }
+
 
 }

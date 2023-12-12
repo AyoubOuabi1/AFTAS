@@ -1,8 +1,7 @@
 package com.ayoub.aftas.aftas.services.impl;
 
-import com.ayoub.aftas.aftas.Config.exceptions.Hunting.HuntingInternalServerError;
-import com.ayoub.aftas.aftas.Config.exceptions.Hunting.HuntingNotFoundException;
-import com.ayoub.aftas.aftas.Config.exceptions.fish.FishNotFoundException;
+import com.ayoub.aftas.aftas.Config.exceptions.InternalServerError;
+import com.ayoub.aftas.aftas.Config.exceptions.NotFoundException;
 import com.ayoub.aftas.aftas.dto.HuntingDto;
 import com.ayoub.aftas.aftas.dto.HuntingInputDto;
 import com.ayoub.aftas.aftas.entities.Fish;
@@ -50,7 +49,6 @@ public class HuntingServiceImp implements HuntingService {
                 huntingInputDto.getMemberId()
         );
         Fish fish=FishMapper.mapFromDto(fishService.getById(huntingInputDto.getFishId()));
-       // Fish fish=fishService.getFishById(huntingInputDto.getFishId());
         if(huntingInputDto.getAverageWeight()>=fish.getAverageWeight()){
             Hunting existHunt=huntingRepository.
                     findByMember_IdAndCompetition_IdAndFish_Id
@@ -80,7 +78,7 @@ public class HuntingServiceImp implements HuntingService {
             }
         }else {
 
-            throw new HuntingInternalServerError("Cannot add this hunting record; the fish must have the same or greater weight than the currently selected fish");
+            throw new InternalServerError("Cannot add this hunting record; the fish must have the same or greater weight than the currently selected fish");
         }
 
     }
@@ -99,7 +97,7 @@ public class HuntingServiceImp implements HuntingService {
                     .build();
             return HuntingMapper.mapToDto(huntingRepository.save(hunting));
         }catch (Exception e){
-            throw  new HuntingInternalServerError("Failed to update Hunt");
+            throw  new InternalServerError("Failed to update Hunt");
         }
 
     }
@@ -111,12 +109,12 @@ public class HuntingServiceImp implements HuntingService {
             if(hunt!=null){
                 huntingRepository.delete(HuntingMapper.mapFromDto(hunt));
             }else {
-                throw  new HuntingNotFoundException("hunt not found with id " + id);
+                throw  new NotFoundException("hunt not found with id " + id);
             }
-        }catch (HuntingNotFoundException e){
+        }catch (NotFoundException e){
             throw e;
         } catch (Exception e){
-            throw new HuntingInternalServerError("error deleting hunt");
+            throw new InternalServerError("error deleting hunt");
         }
     }
 
@@ -137,11 +135,10 @@ public class HuntingServiceImp implements HuntingService {
             if (huntingDtoOptional.isPresent()) {
                 return HuntingMapper.mapToDto(huntingDtoOptional.get());
             } else {
-                throw new FishNotFoundException("Fish not found with ID: " + id);
+                throw new NotFoundException("Fish not found with ID: " + id);
             }
+        }else {
+            throw new InternalServerError("id cannot be null");
         }
-
-        return null;
-
     }
 }

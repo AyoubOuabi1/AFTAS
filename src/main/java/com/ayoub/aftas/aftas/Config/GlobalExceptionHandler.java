@@ -1,12 +1,8 @@
 package com.ayoub.aftas.aftas.Config;
 
-import com.ayoub.aftas.aftas.Config.exceptions.Hunting.HuntingInternalServerError;
-import com.ayoub.aftas.aftas.Config.exceptions.Hunting.HuntingNotFoundException;
-import com.ayoub.aftas.aftas.Config.exceptions.competition.CompetitionInternalServerError;
-import com.ayoub.aftas.aftas.Config.exceptions.competition.CompetitionNotFoundException;
-import com.ayoub.aftas.aftas.Config.exceptions.fish.FishInternalServerError;
-import com.ayoub.aftas.aftas.Config.exceptions.fish.FishNotFoundException;
-import com.ayoub.aftas.aftas.Config.exceptions.ranking.RankingInternalServerError;
+
+import com.ayoub.aftas.aftas.Config.exceptions.InternalServerError;
+import com.ayoub.aftas.aftas.Config.exceptions.NotFoundException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.MethodArgumentNotValidException;
@@ -29,48 +25,16 @@ public class GlobalExceptionHandler {
 
         return ResponseEntity.badRequest().body(errors);
     }
-    ////////Competition///////////////////////////////////
-    @ExceptionHandler(CompetitionNotFoundException.class)
+    @ExceptionHandler(NotFoundException.class)
     @ResponseStatus(HttpStatus.NOT_FOUND)
-    public ResponseEntity<String> handleCompetitionNotFoundException(CompetitionNotFoundException ex) {
+    public ResponseEntity<String> handleNotFoundException(NotFoundException ex) {
         return ResponseEntity.status(HttpStatus.NOT_FOUND).body(ex.getMessage());
     }
-    @ExceptionHandler(CompetitionInternalServerError.class)
+    @ExceptionHandler(InternalServerError.class)
     @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
-    public ResponseEntity<String> handleCompetitionInternalServerError(CompetitionInternalServerError ex) {
-        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(ex.getMessage());
-    }
-
-    ///////////Fish////////////////////////////////////
-    @ExceptionHandler(FishNotFoundException.class)
-    @ResponseStatus(HttpStatus.NOT_FOUND)
-    public ResponseEntity<String> handleFishNotFoundException(CompetitionNotFoundException ex) {
-        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(ex.getMessage());
-    }
-
-    @ExceptionHandler(FishInternalServerError.class)
-    @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
-    public ResponseEntity<String> handleFishInternalServerError(FishInternalServerError ex) {
-        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(ex.getMessage());
-    }
-    ///////////Hunting////////////////////////////////////
-    @ExceptionHandler(HuntingNotFoundException.class)
-    @ResponseStatus(HttpStatus.NOT_FOUND)
-    public ResponseEntity<String> handleHuntingNotFoundException(HuntingNotFoundException ex) {
-        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(ex.getMessage());
-    }
-
-    @ExceptionHandler(HuntingInternalServerError.class)
-    @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
-    public ResponseEntity<String> handleHuntingInternalServerError(HuntingInternalServerError ex) {
+    public ResponseEntity<String> handleInternalServerError(InternalServerError ex) {
         return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(ex.getMessage());
     }
 
 
-    //////Ranking
-    @ExceptionHandler(RankingInternalServerError.class)
-    @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
-    public ResponseEntity<String> handleRankingInternalServerError(RankingInternalServerError ex) {
-        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(ex.getMessage());
-    }
 }

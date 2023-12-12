@@ -1,5 +1,7 @@
 package com.ayoub.aftas.aftas.services.impl;
 
+import com.ayoub.aftas.aftas.Config.exceptions.InternalServerError;
+import com.ayoub.aftas.aftas.Config.exceptions.NotFoundException;
 import com.ayoub.aftas.aftas.dto.MemberDto;
 import com.ayoub.aftas.aftas.entities.Member;
 import com.ayoub.aftas.aftas.mappers.MemberMapper;
@@ -10,6 +12,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class MemberServiceImp implements MemberService {
@@ -45,7 +48,17 @@ public class MemberServiceImp implements MemberService {
     }
 
     @Override
-    public MemberDto getById(Long id) {
-        return MemberMapper.toDto(memberRepository.findById(id).get());
+    public MemberDto getById(Long id)  {
+        if(id != null){
+            Optional<Member> member = memberRepository.findById(id);
+            if(member.isPresent()){
+                return MemberMapper.toDto(member.get());
+            }else {
+                throw  new InternalServerError("Could not find member " + id);
+            }
+        }else {
+            throw  new NotFoundException("Id Could not be null ");
+        }
+
     }
 }

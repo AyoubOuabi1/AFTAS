@@ -44,5 +44,7 @@ public class Competition {
     @JsonIgnore
     @OneToMany(mappedBy = "competition", cascade = CascadeType.ALL)
     private List<Hunting> hunts;
+
+
 }
 

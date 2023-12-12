@@ -1,6 +1,7 @@
 package com.ayoub.aftas.aftas.services.impl;
 
-import com.ayoub.aftas.aftas.Config.exceptions.fish.FishNotFoundException;
+import com.ayoub.aftas.aftas.Config.exceptions.InternalServerError;
+import com.ayoub.aftas.aftas.Config.exceptions.NotFoundException;
 import com.ayoub.aftas.aftas.dto.FishDto;
 import com.ayoub.aftas.aftas.entities.Fish;
 import com.ayoub.aftas.aftas.mappers.FishMapper;
@@ -27,13 +28,12 @@ public class FishServiceImp implements FishService {
     @Override
     public FishDto save(FishDto fishDto)  {
         Fish fish = FishMapper.mapFromDtoWithOutId(fishDto);
-       // fish.setLevel(levelService.getById(fishDto.getId()));
         fish.setLevel(levelService.getById(fishDto.getLevelId()));
         return FishMapper.mapToDto(fishRepository.save(fish));
     }
 
     @Override
-    public FishDto update(FishDto fishDto) throws FishNotFoundException {
+    public FishDto update(FishDto fishDto) throws NotFoundException {
         try {
             FishDto existingFishDto = getById(fishDto.getId());
 
@@ -42,9 +42,9 @@ public class FishServiceImp implements FishService {
                 fishToUpdate.setLevel(levelService.getById(fishDto.getId()));
                 return FishMapper.mapToDto(fishRepository.save(fishToUpdate));
             } else {
-                throw new FishNotFoundException("Fish not found with ID: " + fishDto.getId());
+                throw new NotFoundException("Fish not found with ID: " + fishDto.getId());
             }
-        } catch (FishNotFoundException e) {
+        } catch (NotFoundException e) {
             throw e;
         } catch (Exception e) {
             throw new RuntimeException("Error updating fish", e);
@@ -52,15 +52,15 @@ public class FishServiceImp implements FishService {
     }
 
     @Override
-    public void delete(Long id) throws FishNotFoundException {
+    public void delete(Long id) {
         try {
             FishDto fishDto = getById(id);
             if (fishDto != null) {
                 fishRepository.delete(FishMapper.mapFromDto(fishDto));
             } else {
-                throw new FishNotFoundException("Fish not found with id " + id);
+                throw new NotFoundException("Fish not found with id " + id);
             }
-        } catch (FishNotFoundException e) {
+        } catch (NotFoundException e) {
             throw e;
         } catch (Exception e) {
             throw new RuntimeException("Error deleting fish", e);
@@ -79,18 +79,19 @@ public class FishServiceImp implements FishService {
     }
 
     @Override
-    public FishDto getById(Long id) throws FishNotFoundException {
+    public FishDto getById(Long id) throws NotFoundException {
         if (id != null) {
             Optional<Fish> fishOptional = fishRepository.findById(id);
 
             if (fishOptional.isPresent()) {
                 return FishMapper.mapToDto(fishOptional.get());
             } else {
-                throw new FishNotFoundException("Fish not found with ID: " + id);
+                throw new NotFoundException("Fish not found with ID: " + id);
             }
+        }else {
+            throw new InternalServerError("id cannot be null");
         }
 
-        return null;
     }
 
     @Override

@@ -1,7 +1,7 @@
 package com.ayoub.aftas.aftas.services.impl;
 
-import com.ayoub.aftas.aftas.Config.exceptions.competition.CompetitionInternalServerError;
-import com.ayoub.aftas.aftas.Config.exceptions.competition.CompetitionNotFoundException;
+import com.ayoub.aftas.aftas.Config.exceptions.InternalServerError;
+import com.ayoub.aftas.aftas.Config.exceptions.NotFoundException;
 import com.ayoub.aftas.aftas.dto.CompetitionDto;
 import com.ayoub.aftas.aftas.entities.Competition;
 import com.ayoub.aftas.aftas.mappers.CompetitionMapper;
@@ -12,7 +12,6 @@ import org.springframework.stereotype.Service;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
-import java.util.logging.Logger;
 
 @Service
 public class CompetitionServiceImp implements CompetitionService{
@@ -23,7 +22,7 @@ public class CompetitionServiceImp implements CompetitionService{
     }
 
     @Override
-    public CompetitionDto save(CompetitionDto competitionDto) throws CompetitionInternalServerError {
+    public CompetitionDto save(CompetitionDto competitionDto) throws InternalServerError {
 
         List<CompetitionDto> competitionList = getAll();
         boolean isValid=competitionList.stream().anyMatch(competitionDto1 -> (
@@ -41,13 +40,13 @@ public class CompetitionServiceImp implements CompetitionService{
             competition.setStatus("open");
             return CompetitionMapper.mapToDto(competitionRepository.save(competition));
         }else {
-            throw new CompetitionInternalServerError("Competition with the same date already exists");
+            throw new InternalServerError("Competition with the same date already exists");
         }
 
     }
 
     @Override
-    public CompetitionDto update(CompetitionDto competitionDto) throws CompetitionNotFoundException {
+    public CompetitionDto update(CompetitionDto competitionDto) throws NotFoundException {
         try {
             CompetitionDto existingCompetition = getById(competitionDto.getId());
 
@@ -55,9 +54,9 @@ public class CompetitionServiceImp implements CompetitionService{
                 Competition competitionToUpdate = CompetitionMapper.mapFromDto(competitionDto);
                 return CompetitionMapper.mapToDto(competitionRepository.save(competitionToUpdate));
             } else {
-                throw new CompetitionNotFoundException("Competition not found with ID: " + competitionDto.getId());
+                throw new NotFoundException("Competition not found with ID: " + competitionDto.getId());
             }
-        } catch (CompetitionNotFoundException e) {
+        } catch (NotFoundException e) {
              throw e;
         } catch (Exception e) {
              throw new RuntimeException("Error updating competition", e);
@@ -65,7 +64,7 @@ public class CompetitionServiceImp implements CompetitionService{
     }
 
     @Override
-    public void delete(Long id)  throws CompetitionNotFoundException{
+    public void delete(Long id)  throws NotFoundException {
         try {
             CompetitionDto competitionDto=getById(id);
             if(competitionDto!=null){
@@ -73,9 +72,9 @@ public class CompetitionServiceImp implements CompetitionService{
                 competitionRepository.delete(competition);
 
             }else {
-                throw new CompetitionNotFoundException("Competition not found with id " + id);
+                throw new NotFoundException("Competition not found with id " + id);
             }
-        }catch (CompetitionNotFoundException e) {
+        }catch (NotFoundException e) {
             throw e;
         }catch (Exception e){
             throw new RuntimeException("error deleting competition", e);
@@ -93,14 +92,14 @@ public class CompetitionServiceImp implements CompetitionService{
     }
 
     @Override
-    public CompetitionDto getById(Long id) throws CompetitionNotFoundException {
+    public CompetitionDto getById(Long id) throws NotFoundException {
         if (id != null) {
             Optional<Competition> competitionOptional = competitionRepository.findById(id);
 
             if (competitionOptional.isPresent()) {
                 return CompetitionMapper.mapToDto(competitionOptional.get());
             } else {
-                throw new CompetitionNotFoundException("Competition not found with ID: " + id);
+                throw new NotFoundException("Competition not found with ID: " + id);
             }
         }
 
