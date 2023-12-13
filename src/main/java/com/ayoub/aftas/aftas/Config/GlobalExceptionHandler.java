@@ -22,7 +22,6 @@ public class GlobalExceptionHandler {
         Map<String, String> errors = new HashMap<>();
         ex.getBindingResult().getFieldErrors().forEach(fieldError ->
                 errors.put(fieldError.getField(), fieldError.getDefaultMessage()));
-
         return ResponseEntity.badRequest().body(errors);
     }
     @ExceptionHandler(NotFoundException.class)

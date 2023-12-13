@@ -1,5 +1,7 @@
 package com.ayoub.aftas.aftas.dto;
 
+import com.ayoub.aftas.aftas.helpers.CustomTimeDeserializer;
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import jakarta.annotation.Nullable;
 import jakarta.validation.constraints.*;
 import lombok.AllArgsConstructor;
@@ -24,9 +26,11 @@ public class CompetitionDto {
     private LocalDate date;
 
     @NotNull(message = "Start time cannot be null")
+    @JsonDeserialize(using = CustomTimeDeserializer.class)
     private Time startTime;
 
     @NotNull(message = "End time cannot be null")
+    @JsonDeserialize(using = CustomTimeDeserializer.class)
     private Time endTime;
 
     @NotNull(message = "Number of participants cannot be null")

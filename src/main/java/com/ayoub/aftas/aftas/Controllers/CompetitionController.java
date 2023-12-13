@@ -42,7 +42,8 @@ public class CompetitionController {
             return ResponseEntity.ok(competitionService.save(competitionDto));
         }catch (InternalServerError e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e.getMessage());
-        }    }
+        }
+    }
 
     @DeleteMapping("/{id}")
     public ResponseEntity<?> delete(@Valid @PathVariable Long id){
@@ -50,7 +51,7 @@ public class CompetitionController {
             competitionService.delete(id);
             return ResponseEntity.ok("competition successfully deleted");
         }catch (NotFoundException e) {
-            return ResponseEntity.status(HttpServletResponse.SC_NOT_FOUND).body(e.getMessage());
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
         }
     }
 
@@ -59,7 +60,9 @@ public class CompetitionController {
          try {
              return ResponseEntity.ok(competitionService.getById(id));
         }catch (NotFoundException e) {
-            return ResponseEntity.status(HttpServletResponse.SC_NOT_FOUND).body(e.getMessage());
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
         }
     }
+
+
 }
