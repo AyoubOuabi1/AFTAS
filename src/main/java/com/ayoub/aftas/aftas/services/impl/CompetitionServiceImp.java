@@ -9,6 +9,8 @@ import com.ayoub.aftas.aftas.respositories.CompetitionRepository;
 import com.ayoub.aftas.aftas.services.CompetitionService;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
+import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -23,26 +25,30 @@ public class CompetitionServiceImp implements CompetitionService{
 
     @Override
     public CompetitionDto save(CompetitionDto competitionDto) throws InternalServerError {
-
-        List<CompetitionDto> competitionList = getAll();
-        boolean isValid=competitionList.stream().anyMatch(competitionDto1 -> (
-                competitionDto1.getDate().isEqual(competitionDto.getDate()))
-        );
-        if(!isValid){
-            String code=competitionDto.getLocation()
-                    .substring(0,3)
-                    .concat("-")
-                    .concat(competitionDto.getDate()
-                            .toString()
-                            );
-            competitionDto.setCode(code);
-            Competition competition= CompetitionMapper.mapFromDtoWithoutId(competitionDto);
-            competition.setStatus("open");
-            return CompetitionMapper.mapToDto(competitionRepository.save(competition));
+        LocalDate localDate = LocalDate.now().plus(2, ChronoUnit.DAYS);
+        if(competitionDto.getDate().isAfter(localDate)) {
+            List<CompetitionDto> competitionList = getAll();
+            boolean isValid = competitionList.stream().anyMatch(competitionDto1 -> (
+                    competitionDto1.getDate().isEqual(competitionDto.getDate()))
+            );
+            if (!isValid) {
+                String code = competitionDto.getLocation()
+                        .substring(0, 3)
+                        .concat("-")
+                        .concat(competitionDto.getDate()
+                                .toString()
+                        );
+                competitionDto.setCode(code);
+                Competition competition = CompetitionMapper.mapFromDtoWithoutId(competitionDto);
+                competition.setStatus("open");
+                return CompetitionMapper.mapToDto(competitionRepository.save(competition));
+            } else {
+                throw new InternalServerError("Competition with the same date already exists");
+            }
         }else {
-            throw new InternalServerError("Competition with the same date already exists");
-        }
+            throw new InternalServerError("you can create a new Competition only before  48h of start date ");
 
+        }
     }
 
     @Override
