@@ -7,6 +7,9 @@ import com.ayoub.aftas.aftas.entities.Competition;
 import com.ayoub.aftas.aftas.mappers.CompetitionMapper;
 import com.ayoub.aftas.aftas.respositories.CompetitionRepository;
 import com.ayoub.aftas.aftas.services.CompetitionService;
+import org.modelmapper.ModelMapper;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
@@ -19,8 +22,11 @@ import java.util.Optional;
 public class CompetitionServiceImp implements CompetitionService{
 
     CompetitionRepository competitionRepository;
-    CompetitionServiceImp(CompetitionRepository competitionRepository){
+    private ModelMapper modelMapper;
+
+    CompetitionServiceImp(CompetitionRepository competitionRepository,ModelMapper modelMapper){
         this.competitionRepository = competitionRepository;
+        this.modelMapper = modelMapper;
     }
 
     @Override
@@ -98,6 +104,11 @@ public class CompetitionServiceImp implements CompetitionService{
     }
 
     @Override
+    public Page<CompetitionDto> getAllEntities(Pageable pageable) {
+        Page<Competition> competitionsPage = competitionRepository.findAll(pageable);
+        return competitionsPage.map(entity -> modelMapper.map(entity, CompetitionDto.class));
+    }
+    @Override
     public CompetitionDto getById(Long id) throws NotFoundException {
         if (id != null) {
             Optional<Competition> competitionOptional = competitionRepository.findById(id);
@@ -110,6 +121,11 @@ public class CompetitionServiceImp implements CompetitionService{
         }
 
         return null;
+    }
+
+    @Override
+    public int getCompCount() {
+        return competitionRepository.countCompetitions();
     }
 
 }
