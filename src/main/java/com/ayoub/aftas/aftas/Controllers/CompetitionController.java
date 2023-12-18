@@ -25,9 +25,9 @@ public class CompetitionController {
         this.competitionService =competitionService;
     }
 
-    @GetMapping("/sizes")
-    public Integer getAll() {
-        return competitionService.getCompCount();
+    @GetMapping("")
+    public List<CompetitionDto> getAll() {
+        return competitionService.getAll();
     }
     @GetMapping("all")
     public ResponseEntity<Page<CompetitionDto>> getAllEntities(
@@ -61,7 +61,7 @@ public class CompetitionController {
     public ResponseEntity<?> delete(@Valid @PathVariable Long id){
         try {
             competitionService.delete(id);
-            return ResponseEntity.ok("competition successfully deleted");
+            return ResponseEntity.noContent().build();
         }catch (NotFoundException e) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
         }

@@ -19,11 +19,14 @@ public class MemberController {
         this.memberService = memberService;
     }
 
-    @GetMapping("")
+    /*@GetMapping("")
     public List<MemberDto> get(){
         return memberService.getAll();
+    }*/
+    @GetMapping("")
+    public List<MemberDto> get(){
+        return memberService.findMembersWithoutCompetition();
     }
-
     @PostMapping("")
     public Member save(@RequestBody  MemberDto memberDto){
         Member member = MemberMapper.mapFromDtoWithOutId(memberDto);

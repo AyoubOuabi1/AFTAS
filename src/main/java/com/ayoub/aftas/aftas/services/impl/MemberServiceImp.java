@@ -41,7 +41,7 @@ public class MemberServiceImp implements MemberService {
     @Override
     public List<MemberDto> getAll() {
         List<MemberDto> list = new ArrayList<>();
-        memberRepository.findAll().stream().forEach(member->{
+        memberRepository.findAll().forEach(member->{
            list.add(MemberMapper.toDto(member));
         });
         return  list;
@@ -60,5 +60,14 @@ public class MemberServiceImp implements MemberService {
             throw  new NotFoundException("Id Could not be null ");
         }
 
+    }
+
+    @Override
+    public List<MemberDto> findMembersWithoutCompetition() {
+        List<MemberDto> list = new ArrayList<>();
+        memberRepository.findMembersWithoutCompetition().forEach(member->{
+            list.add(MemberMapper.toDto(member));
+        });
+        return  list;
     }
 }

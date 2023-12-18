@@ -13,4 +13,6 @@ public interface MemberService {
     void delete(Member member);
     List<MemberDto> getAll();
     MemberDto getById(Long id);
+
+    List<MemberDto> findMembersWithoutCompetition();
 }
