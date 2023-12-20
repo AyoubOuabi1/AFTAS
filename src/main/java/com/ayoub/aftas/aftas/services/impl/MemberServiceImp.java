@@ -63,9 +63,18 @@ public class MemberServiceImp implements MemberService {
     }
 
     @Override
-    public List<MemberDto> findMembersWithoutCompetition() {
+    public List<MemberDto> findMembersNotRankedInCompetition(Long competitionId) {
         List<MemberDto> list = new ArrayList<>();
-        memberRepository.findMembersWithoutCompetition().forEach(member->{
+        memberRepository.findMembersNotRankedInCompetition(competitionId).forEach(member->{
+            list.add(MemberMapper.toDto(member));
+        });
+        return  list;
+    }
+
+    @Override
+    public List<MemberDto> findMembersRankedInCompetition(Long competitionId) {
+        List<MemberDto> list = new ArrayList<>();
+        memberRepository.findMembersRankedInCompetition(competitionId).forEach(member->{
             list.add(MemberMapper.toDto(member));
         });
         return  list;

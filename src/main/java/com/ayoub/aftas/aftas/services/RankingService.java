@@ -2,7 +2,9 @@ package com.ayoub.aftas.aftas.services;
 
 import com.ayoub.aftas.aftas.dto.MemberDto;
 import com.ayoub.aftas.aftas.dto.RankingDto;
+import com.ayoub.aftas.aftas.entities.RankId;
 import com.ayoub.aftas.aftas.entities.Ranking;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -13,8 +15,8 @@ public interface RankingService {
     Ranking update(Ranking ranking);
     void delete(Ranking ranking);
     List<Ranking> getAll();
-    Ranking getById(Long id);
+    Ranking getById(RankId id);
     Ranking getRankingByCompetition_idAndMember_id(Long competitionId, Long memberId);
-
+    List<Ranking> findRankingByCompetition_Id(Long competitionId);
     List<MemberDto> getWinners(Long Competition);
 }

@@ -10,6 +10,7 @@ import com.ayoub.aftas.aftas.services.RankingService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.RequestMethod;
 
 import java.util.List;
 
@@ -27,7 +28,10 @@ public class RankingController {
     public List<Ranking> getRanks() {
         return rankingService.getAll();
     }
-
+    @GetMapping("competitions/{competitionId}/rankings")
+    public List<Ranking> getRankingsByCompetition(@PathVariable Long competitionId) {
+        return rankingService.findRankingByCompetition_Id(competitionId);
+    }
     @PostMapping
     public ResponseEntity<?> save(@RequestBody RankingDto rankingDto ){
         try{
@@ -37,7 +41,7 @@ public class RankingController {
         }
     }
 
-    @GetMapping("/competition/{competitionId}")
+    @GetMapping("/competitions/winners/{competitionId}")
     public List<MemberDto> getWinners(@PathVariable Long competitionId){
         return rankingService.getWinners(competitionId);
     }

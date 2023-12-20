@@ -29,16 +29,26 @@ public class CompetitionController {
     public List<CompetitionDto> getAll() {
         return competitionService.getAll();
     }
+
+    @GetMapping("/open")
+    public List<CompetitionDto> getOpenCompetitions() {
+        return competitionService.getOpenCompetitions();
+    }
+    @GetMapping("/active")
+    public List<CompetitionDto> getActiveCompetitions() {
+        return competitionService.getActiveCompetitions();
+    }
     @GetMapping("all")
     public ResponseEntity<Page<CompetitionDto>> getAllEntities(
             @RequestParam(defaultValue = "0") int page,
-            @RequestParam(defaultValue = "5") int size) {
+            @RequestParam(defaultValue = "5") int size,
+            @RequestParam(defaultValue = "all") String status ) {
 
         Pageable pageable = PageRequest.of(page, size);
-        Page<CompetitionDto> competitionDtos = competitionService.getAllEntities(pageable);
-
+        Page<CompetitionDto> competitionDtos = competitionService.getAllEntities(pageable, status);
         return ResponseEntity.ok(competitionDtos);
     }
+
     @PostMapping("")
     public ResponseEntity<?> save(@Valid  @RequestBody CompetitionDto competitionDto){
         try{

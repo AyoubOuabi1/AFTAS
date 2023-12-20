@@ -11,9 +11,9 @@ import lombok.*;
 @AllArgsConstructor
 @NoArgsConstructor
 public class Ranking {
-    @Id
+    @EmbeddedId()
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    private RankId id;
 
     private Integer rank;
 
@@ -21,11 +21,12 @@ public class Ranking {
 
     @ManyToOne
     @JoinColumn(name = "member_id")
+    @MapsId("memberId")
     private Member member;
 
     @ManyToOne
     @JoinColumn(name = "competition_id")
-
+    @MapsId("competitionId")
     private Competition competition;
 
  }

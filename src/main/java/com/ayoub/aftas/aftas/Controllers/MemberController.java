@@ -23,9 +23,14 @@ public class MemberController {
     public List<MemberDto> get(){
         return memberService.getAll();
     }*/
-    @GetMapping("")
-    public List<MemberDto> get(){
-        return memberService.findMembersWithoutCompetition();
+    @GetMapping("/competitions")
+    public List<MemberDto> get(@RequestParam Long competitionId){
+        return memberService.findMembersNotRankedInCompetition(competitionId);
+    }
+
+    @GetMapping("/competitions/rank")
+    public List<MemberDto> getMembersByCompetition(@RequestParam Long competitionId){
+        return memberService.findMembersRankedInCompetition(competitionId);
     }
     @PostMapping("")
     public Member save(@RequestBody  MemberDto memberDto){

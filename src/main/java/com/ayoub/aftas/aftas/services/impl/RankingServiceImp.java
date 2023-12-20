@@ -5,14 +5,16 @@ package com.ayoub.aftas.aftas.services.impl;
 import com.ayoub.aftas.aftas.dto.RankingDto;
 import com.ayoub.aftas.aftas.entities.Competition;
 import com.ayoub.aftas.aftas.entities.Member;
-import com.ayoub.aftas.aftas.entities.Ranking;
+ import com.ayoub.aftas.aftas.entities.RankId;
+ import com.ayoub.aftas.aftas.entities.Ranking;
 import com.ayoub.aftas.aftas.mappers.CompetitionMapper;
 import com.ayoub.aftas.aftas.mappers.MemberMapper;
 import com.ayoub.aftas.aftas.respositories.RankingRepository;
 import com.ayoub.aftas.aftas.services.CompetitionService;
 import com.ayoub.aftas.aftas.services.MemberService;
 import com.ayoub.aftas.aftas.services.RankingService;
-import org.springframework.stereotype.Service;
+ import org.springframework.data.domain.Sort;
+ import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.Comparator;
@@ -42,9 +44,13 @@ public class RankingServiceImp implements RankingService {
                 memberService.getById(rankingDto.getMemberId())
         );
         if(getRankingByCompetition_idAndMember_id(competition.getId(), member.getId()) == null) {
-            if (getAll().size() < competition.getNumberOfParticipants()) {
+            if (findRankingByCompetition_Id(competition.getId()).size() <= competition.getNumberOfParticipants()) {
 
                 Ranking ranking = Ranking.builder()
+                        .id(RankId.builder()
+                                .memberId(member.getId())
+                                .competitionId(competition.getId())
+                                .build())
                         .rank(0)
                         .score(0)
                         .competition(competition)
@@ -77,7 +83,8 @@ public class RankingServiceImp implements RankingService {
     }
 
     @Override
-    public Ranking getById(Long id) {
+    public Ranking getById(RankId id) {
+
         return rankingRepository.findById(id).get();
     }
 
@@ -87,17 +94,27 @@ public class RankingServiceImp implements RankingService {
     }
 
     @Override
+    public List<Ranking> findRankingByCompetition_Id(Long competition_id) {
+        Sort sort = Sort.by(Sort.Order.desc("score"));
+        Long competitionId=getAll().get(0).getId().getCompetitionId();
+        if(competition_id==null){
+            return rankingRepository.findRankingByCompetition_Id(competitionId, sort);
+        }
+        return rankingRepository.findRankingByCompetition_Id(competition_id, sort);
+    }
+
+    @Override
     public  List<MemberDto> getWinners(Long id) {
-        List<MemberDto> winners = new ArrayList<MemberDto>();
-        List<Ranking> rankings =sortByScore();
+        List<MemberDto> winners = new ArrayList<>();
+        List<Ranking> rankings =findRankingByCompetition_Id(id);
         winners.add(MemberMapper.toDto(rankings.get(0).getMember()));
         winners.add(MemberMapper.toDto(rankings.get(1).getMember()));
         winners.add(MemberMapper.toDto(rankings.get(2).getMember()));
         return winners;
     }
 
-    private List<Ranking> sortByScore(){
-          List<Ranking> rankingList=getAll().stream()
+    private List<Ranking> sortByScore(Long competitionId){
+          List<Ranking> rankingList=findRankingByCompetition_Id(competitionId).stream()
                 .sorted(Comparator.comparingInt(Ranking::getScore)).
                 toList();
         IntStream.range(0, rankingList.size())

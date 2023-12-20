@@ -18,9 +18,12 @@ public interface CompetitionService {
     void delete(Long id) throws NotFoundException;
 
     List<CompetitionDto> getAll();
+    List<CompetitionDto> getOpenCompetitions();
+    List<CompetitionDto> getActiveCompetitions();
 
-    Page<CompetitionDto> getAllEntities(Pageable pageable);
+    Page<CompetitionDto> getAllEntities(Pageable pageable,String status);
 
     CompetitionDto getById(Long id) throws NotFoundException;
-    int getCompCount();
+    Page<CompetitionDto> findByStatus(String status, Pageable pageable);
+
 }

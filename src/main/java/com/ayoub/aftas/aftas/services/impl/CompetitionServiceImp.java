@@ -12,11 +12,14 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
+import java.sql.Time;
 import java.time.LocalDate;
+import java.time.LocalTime;
 import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 public class CompetitionServiceImp implements CompetitionService{
@@ -47,7 +50,8 @@ public class CompetitionServiceImp implements CompetitionService{
                 competitionDto.setCode(code);
                 Competition competition = CompetitionMapper.mapFromDtoWithoutId(competitionDto);
                 competition.setStatus("open");
-                return CompetitionMapper.mapToDto(competitionRepository.save(competition));
+                Competition savedCompetition = competitionRepository.save(competition);
+                return CompetitionMapper.mapToDto(savedCompetition);
             } else {
                 throw new InternalServerError("Competition with the same date already exists");
             }
@@ -55,6 +59,30 @@ public class CompetitionServiceImp implements CompetitionService{
             throw new InternalServerError("you can create a new Competition only before  48h of start date ");
 
         }
+    }
+    private void updateCompetitionStatus() {
+        List<Competition> competitionList = competitionRepository.findAll();
+        LocalDate currentDate = LocalDate.now();
+
+        for (Competition competition : competitionList) {
+            LocalDate competitionDate = competition.getDate();
+            //LocalTime endTime = competition.getEndTime().toLocalTime();
+
+            if (competitionDate.isEqual(currentDate)) {
+                competition.setStatus("active");
+               /* if (endTime.isBefore(currentTime)) {
+                    competition.setStatus("close");
+                } else if (competition.getStartTime().toLocalTime().isBefore(currentTime)) {
+
+                }*/
+            } else if (competitionDate.isBefore(currentDate)) {
+                competition.setStatus("close");
+            } else if (competitionDate.isAfter(currentDate)){
+                competition.setStatus("open");
+            }
+        }
+
+        competitionRepository.saveAll(competitionList);
     }
 
     @Override
@@ -104,9 +132,35 @@ public class CompetitionServiceImp implements CompetitionService{
     }
 
     @Override
-    public Page<CompetitionDto> getAllEntities(Pageable pageable) {
-        Page<Competition> competitionsPage = competitionRepository.findAll(pageable);
-        return competitionsPage.map(entity -> modelMapper.map(entity, CompetitionDto.class));
+    public List<CompetitionDto> getOpenCompetitions() {
+        List<CompetitionDto> competitionDtoList= new ArrayList<CompetitionDto>();
+        competitionRepository.getCompetitionsByStatus("open").stream().forEach(competition -> {
+            competitionDtoList.add(CompetitionMapper.mapToDto(competition));
+        });
+        return competitionDtoList;
+    }
+
+    @Override
+    public List<CompetitionDto> getActiveCompetitions() {
+        List<CompetitionDto> competitionDtoList= new ArrayList<>();
+        competitionRepository.getCompetitionsByStatus("active").stream().forEach(competition -> {
+            competitionDtoList.add(CompetitionMapper.mapToDto(competition));
+        });
+        return competitionDtoList;
+    }
+
+
+    @Override
+    public Page<CompetitionDto> getAllEntities(Pageable pageable, String status) {
+        updateCompetitionStatus();
+        Page<Competition> competitions;
+        if(status!=null &&status.equalsIgnoreCase("all")){
+            competitions = competitionRepository.findAll(pageable);
+        }else   {
+            competitions = competitionRepository.findByStatus(status, pageable);
+        }
+
+        return competitions.map(CompetitionMapper::mapToDto);
     }
     @Override
     public CompetitionDto getById(Long id) throws NotFoundException {
@@ -124,8 +178,9 @@ public class CompetitionServiceImp implements CompetitionService{
     }
 
     @Override
-    public int getCompCount() {
-        return competitionRepository.countCompetitions();
+    public Page<CompetitionDto> findByStatus(String status, Pageable pageable) {
+        return null;
     }
+
 
 }
