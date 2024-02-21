@@ -24,8 +24,8 @@ public class Hunting {
     private Competition competition;
 
     @ManyToOne
-    @JoinColumn(name = "member_id")
-    private Member member;
+    @JoinColumn(name = "user_id")
+    private User user;
 
     @ManyToOne
     @JoinColumn(name = "fish_id")

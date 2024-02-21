@@ -16,6 +16,10 @@ public interface CompetitionRepository extends JpaRepository<Competition, Long> 
     @Query("SELECT c FROM Competition c where c.status=:status ")
     List<Competition> getCompetitionsByStatus(@Param("status") String status);
 
+    @Query("SELECT c FROM Competition c where c in (SELECT r.competition FROM Ranking r where r.user.id=:userId)")
+    Page<Competition> findCompetitionByUserId(Long userId, Pageable pageable);
+
+
     Page<Competition> findByStatus(String status, Pageable pageable);
 
 

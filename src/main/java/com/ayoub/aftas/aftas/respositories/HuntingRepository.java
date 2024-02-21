@@ -9,5 +9,5 @@ import org.springframework.stereotype.Repository;
 public interface HuntingRepository extends JpaRepository<Hunting,Long> {
 
     @Query()
-    Hunting findByMember_IdAndCompetition_IdAndFish_Id(Long Member_Id, Long Competition_Id,Long Fish_Id);
+    Hunting findByUser_IdAndCompetition_IdAndFish_Id(Long Member_Id, Long Competition_Id,Long Fish_Id);
 }

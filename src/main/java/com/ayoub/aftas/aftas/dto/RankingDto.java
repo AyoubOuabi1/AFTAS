@@ -16,5 +16,5 @@ public class RankingDto {
     Long competitionId;
 
     @NotNull(message = "Member ID cannot be null")
-    Long memberId;
+    Long userId;
 }

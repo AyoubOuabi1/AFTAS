@@ -8,7 +8,7 @@ public class HuntingMapper {
         return HuntingDto.builder()
                 .id(hunting.getId())
                 .numberOfFish(hunting.getNumberOfFish())
-                .member(hunting.getMember())
+                .member(hunting.getUser())
                 .competition(hunting.getCompetition())
                 .fish(hunting.getFish())
                 .build();
@@ -19,7 +19,7 @@ public class HuntingMapper {
                 .numberOfFish(huntingDto.getNumberOfFish())
                 .fish(huntingDto.getFish())
                 .competition(huntingDto.getCompetition())
-                .member(huntingDto.getMember())
+                .user(huntingDto.getMember())
                 .build();
     }
 

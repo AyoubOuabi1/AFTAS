@@ -46,6 +46,7 @@ public class AftasApplication {
 
         return new CorsFilter(source);
     }
+
     /*@Bean
     CommandLineRunner configRunner(){
         return (args) -> {
@@ -54,16 +55,17 @@ public class AftasApplication {
                             .name("CRUD_FISH")
                             .build()
             );
-            PermissionEntity crudCompetition = permissionService.savePermission(
+            PermissionEntity readCompetitions = permissionService.savePermission(
                     PermissionEntity.builder()
-                            .name("CRUD_COMPETITION")
+                            .name("READ_COMPETITIONS")
                             .build()
             );
-            PermissionEntity crudHunting = permissionService.savePermission(
+            PermissionEntity insertUpdateDeleteCompetitions = permissionService.savePermission(
                     PermissionEntity.builder()
-                            .name("CRUD_HUNTING")
+                            .name("INSERT_UPDATE_DELETE_COMPETITIONS")
                             .build()
             );
+
             PermissionEntity crudLevel = permissionService.savePermission(
                     PermissionEntity.builder()
                             .name("CRUD_LEVEL")
@@ -81,23 +83,28 @@ public class AftasApplication {
                             .name("CRUD_RANKING")
                             .build()
             );
+            PermissionEntity crudHunting = permissionService.savePermission(
+                    PermissionEntity.builder()
+                            .name("CRUD_HUNTING")
+                            .build()
+            );
 
             roleService.saveRole(
                     RoleEntity.builder()
                          .name("USER")
-                         .permissions(Set.of(crudCompetition,crudRanking))
+                         .permissions(Set.of(readCompetitions,crudRanking))
                          .build()
             );
             roleService.saveRole(
                     RoleEntity.builder()
                          .name("MANAGER")
-                         .permissions(Set.of(crudFish,crudCompetition,crudHunting,crudLevel,crudMember,crudRanking))
+                         .permissions(Set.of(crudFish,readCompetitions,insertUpdateDeleteCompetitions,crudHunting,crudLevel,crudMember,crudRanking))
                          .build()
             );
             roleService.saveRole(
                     RoleEntity.builder()
                        .name("JURY")
-                       .permissions(Set.of(crudCompetition,crudHunting,crudRanking))
+                       .permissions(Set.of(readCompetitions,insertUpdateDeleteCompetitions,crudHunting,crudRanking))
                        .build()
             );
         };

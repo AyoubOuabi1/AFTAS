@@ -3,13 +3,19 @@ package com.ayoub.aftas.aftas.services.impl;
 import com.ayoub.aftas.aftas.Config.exceptions.InternalServerError;
 import com.ayoub.aftas.aftas.Config.exceptions.NotFoundException;
 import com.ayoub.aftas.aftas.dto.CompetitionDto;
+import com.ayoub.aftas.aftas.dto.UserDto;
 import com.ayoub.aftas.aftas.entities.Competition;
+import com.ayoub.aftas.aftas.entities.User;
 import com.ayoub.aftas.aftas.mappers.CompetitionMapper;
+import com.ayoub.aftas.aftas.mappers.UserMapper;
 import com.ayoub.aftas.aftas.respositories.CompetitionRepository;
 import com.ayoub.aftas.aftas.services.CompetitionService;
+import com.ayoub.aftas.aftas.services.UserService;
 import org.modelmapper.ModelMapper;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 import java.sql.Time;
@@ -26,10 +32,15 @@ public class CompetitionServiceImp implements CompetitionService{
 
     CompetitionRepository competitionRepository;
     private ModelMapper modelMapper;
+    UserService userService;
 
-    CompetitionServiceImp(CompetitionRepository competitionRepository,ModelMapper modelMapper){
+    UserMapper userMapper;
+    CompetitionServiceImp(CompetitionRepository competitionRepository,ModelMapper modelMapper,
+                          UserService userService,UserMapper userMapper){
         this.competitionRepository = competitionRepository;
         this.modelMapper = modelMapper;
+        this.userService = userService;
+        this.userMapper = userMapper;
     }
 
     @Override
@@ -154,14 +165,24 @@ public class CompetitionServiceImp implements CompetitionService{
     public Page<CompetitionDto> getAllEntities(Pageable pageable, String status) {
         updateCompetitionStatus();
         Page<Competition> competitions;
-        if(status!=null &&status.equalsIgnoreCase("all")){
+        if (status != null && status.equalsIgnoreCase("all")) {
             competitions = competitionRepository.findAll(pageable);
-        }else   {
+        } else {
             competitions = competitionRepository.findByStatus(status, pageable);
         }
-
         return competitions.map(CompetitionMapper::mapToDto);
     }
+
+    @Override
+    public Page<CompetitionDto> getCompetitionsByUserId(Pageable pageable) {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        User user = authentication.getPrincipal() instanceof User ? (User) authentication.getPrincipal() : null;
+        assert user != null;
+        Page<Competition> competitions = competitionRepository.findCompetitionByUserId(user.getId(), pageable);
+        return competitions.map(CompetitionMapper::mapToDto);
+
+    }
+
     @Override
     public CompetitionDto getById(Long id) throws NotFoundException {
         if (id != null) {

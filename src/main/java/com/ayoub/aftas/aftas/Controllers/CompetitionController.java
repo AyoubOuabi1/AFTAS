@@ -49,6 +49,17 @@ public class CompetitionController {
         return ResponseEntity.ok(competitionDtos);
     }
 
+
+    @GetMapping("/myCompetitions")
+    public ResponseEntity<Page<CompetitionDto>> getCompetitionsByUserId(
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "5") int size) {
+        Pageable pageable = PageRequest.of(page, size);
+        Page<CompetitionDto> competition = competitionService.getCompetitionsByUserId(pageable);
+        return ResponseEntity.ok(competition);
+    }
+
+
     @PostMapping("")
     public ResponseEntity<?> save(@Valid  @RequestBody CompetitionDto competitionDto){
         try{

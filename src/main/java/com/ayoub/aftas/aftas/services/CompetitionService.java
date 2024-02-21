@@ -23,6 +23,8 @@ public interface CompetitionService {
 
     Page<CompetitionDto> getAllEntities(Pageable pageable,String status);
 
+    Page<CompetitionDto> getCompetitionsByUserId(Pageable pageable);
+
     CompetitionDto getById(Long id) throws NotFoundException;
     Page<CompetitionDto> findByStatus(String status, Pageable pageable);
 

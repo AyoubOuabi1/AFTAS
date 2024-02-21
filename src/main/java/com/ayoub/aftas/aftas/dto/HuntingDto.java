@@ -2,11 +2,7 @@ package com.ayoub.aftas.aftas.dto;
 
 import com.ayoub.aftas.aftas.entities.Competition;
 import com.ayoub.aftas.aftas.entities.Fish;
-import com.ayoub.aftas.aftas.entities.Hunting;
-import com.ayoub.aftas.aftas.entities.Member;
-import jakarta.annotation.Nullable;
-import jakarta.validation.constraints.NotNull;
-import jakarta.validation.constraints.Positive;
+import com.ayoub.aftas.aftas.entities.User;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -22,7 +18,7 @@ public class HuntingDto {
 
     private Integer numberOfFish;
 
-    private Member member;
+    private User member;
 
     private Competition competition;
 

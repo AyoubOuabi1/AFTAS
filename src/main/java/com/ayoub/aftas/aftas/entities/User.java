@@ -1,5 +1,6 @@
 package com.ayoub.aftas.aftas.entities;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -9,8 +10,10 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
+import java.time.LocalDate;
 import java.util.Collection;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 @Data
@@ -26,6 +29,28 @@ public class User implements UserDetails {
     private String username;
     private String email;
     private String password;
+
+    private Integer num;
+
+    private String name;
+
+    private String familyName;
+
+    private LocalDate accessionDate;
+
+    private String nationality;
+
+    private String identityDocument;
+
+    private String identityNumber;
+
+    @JsonIgnore
+    @OneToMany(mappedBy = "user",cascade = CascadeType.ALL)
+    private List<Ranking> rankings;
+
+    @JsonIgnore
+    @OneToMany(mappedBy = "user",cascade = CascadeType.ALL)
+    private List<Hunting> hunts;
 
 
     @ManyToMany(fetch = FetchType.EAGER)

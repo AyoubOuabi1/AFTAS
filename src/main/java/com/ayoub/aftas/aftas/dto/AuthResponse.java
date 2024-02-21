@@ -11,7 +11,7 @@ import java.util.Set;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-public class ResponseDto {
+public class AuthResponse {
     private String username;
     private String email;
     private String accessToken;

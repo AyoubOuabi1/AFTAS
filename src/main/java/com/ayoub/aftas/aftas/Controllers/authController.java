@@ -1,8 +1,8 @@
 package com.ayoub.aftas.aftas.Controllers;
 
  import com.ayoub.aftas.aftas.dto.AuthenticateDto;
- import com.ayoub.aftas.aftas.dto.RegisterDto;
- import com.ayoub.aftas.aftas.dto.ResponseDto;
+ import com.ayoub.aftas.aftas.dto.RequestRegisterDto;
+ import com.ayoub.aftas.aftas.dto.AuthResponse;
  import com.ayoub.aftas.aftas.services.UserService;
  import jakarta.validation.Valid;
 import jakarta.validation.ValidationException;
@@ -24,13 +24,13 @@ public class authController {
     private final UserService userService;
 
     @PostMapping("register")
-    public ResponseEntity<ResponseDto> register(@Valid @RequestBody RegisterDto registerDto) throws ValidationException{
-        return ResponseEntity.ok(userService.register(registerDto));
+    public ResponseEntity<AuthResponse> register(@Valid @RequestBody RequestRegisterDto requestRegisterDto) throws ValidationException{
+        return ResponseEntity.ok(userService.register(requestRegisterDto));
     }
 
 
     @PostMapping("login")
-    public ResponseEntity<ResponseDto> authenticate(@Valid @RequestBody AuthenticateDto authenticateDto){
+    public ResponseEntity<AuthResponse> authenticate(@Valid @RequestBody AuthenticateDto authenticateDto){
         return ResponseEntity.ok(userService.authenticate(authenticateDto));
     }
 

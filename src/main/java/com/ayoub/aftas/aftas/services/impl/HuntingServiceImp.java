@@ -7,10 +7,7 @@ import com.ayoub.aftas.aftas.dto.HuntingInputDto;
 import com.ayoub.aftas.aftas.entities.Fish;
 import com.ayoub.aftas.aftas.entities.Hunting;
 import com.ayoub.aftas.aftas.entities.Ranking;
-import com.ayoub.aftas.aftas.mappers.CompetitionMapper;
-import com.ayoub.aftas.aftas.mappers.FishMapper;
-import com.ayoub.aftas.aftas.mappers.HuntingMapper;
-import com.ayoub.aftas.aftas.mappers.MemberMapper;
+import com.ayoub.aftas.aftas.mappers.*;
 import com.ayoub.aftas.aftas.respositories.HuntingRepository;
 import com.ayoub.aftas.aftas.respositories.RankingRepository;
 import com.ayoub.aftas.aftas.services.*;
@@ -25,21 +22,24 @@ public class HuntingServiceImp implements HuntingService {
 
     HuntingRepository huntingRepository;
     CompetitionService competitionService;
-    MemberService memberService;
+    UserService userService;
     FishService fishService;
 
     RankingService rankingService;
+    UserMapper userMapper;
 
     public HuntingServiceImp(HuntingRepository huntingRepository,
                              CompetitionService competitionService,
-                             MemberService memberService,
+                             UserService userService,
                              FishService fishService,
-                             RankingService rankingService){
+                             RankingService rankingService,
+                             UserMapper userManager){
         this.huntingRepository = huntingRepository;
         this.competitionService = competitionService;
-        this.memberService = memberService;
+        this.userService = userService;
         this.fishService = fishService;
         this.rankingService = rankingService;
+        this.userMapper = userManager;
     }
 
     @Override
@@ -51,7 +51,7 @@ public class HuntingServiceImp implements HuntingService {
         Fish fish=FishMapper.mapFromDto(fishService.getById(huntingInputDto.getFishId()));
         if(huntingInputDto.getAverageWeight()>=fish.getAverageWeight()){
             Hunting existHunt=huntingRepository.
-                    findByMember_IdAndCompetition_IdAndFish_Id
+                    findByUser_IdAndCompetition_IdAndFish_Id
                             (huntingInputDto.getMemberId(),
                                     huntingInputDto.getCompetitionId(),
                                     fish.getId()
@@ -70,7 +70,7 @@ public class HuntingServiceImp implements HuntingService {
                                         competitionService.getById(huntingInputDto.getCompetitionId())
                                 )
                         )
-                        .member(MemberMapper.mapFromDto(memberService.getById(huntingInputDto.getMemberId())))
+                        .user(userMapper.toEntity(userService.getById(huntingInputDto.getMemberId())))
                         .fish(fish)
                         .build();
                 ranking.setScore(ranking.getScore()+fish.getLevel().getPoints());
@@ -93,7 +93,7 @@ public class HuntingServiceImp implements HuntingService {
                                     competitionService.getById(huntingInputDto.getCompetitionId())
                             )
                     )
-                    .member(MemberMapper.mapFromDto(memberService.getById(huntingInputDto.getMemberId())))
+                    .user(userMapper.toEntity(userService.getById(huntingInputDto.getMemberId())))
                     .build();
             return HuntingMapper.mapToDto(huntingRepository.save(hunting));
         }catch (Exception e){

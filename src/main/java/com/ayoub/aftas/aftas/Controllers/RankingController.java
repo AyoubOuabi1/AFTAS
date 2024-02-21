@@ -2,15 +2,13 @@ package com.ayoub.aftas.aftas.Controllers;
 
 import com.ayoub.aftas.aftas.Config.Constant;
 import com.ayoub.aftas.aftas.Config.exceptions.InternalServerError;
-import com.ayoub.aftas.aftas.dto.MemberDto;
 import com.ayoub.aftas.aftas.dto.RankingDto;
-import com.ayoub.aftas.aftas.entities.Member;
+import com.ayoub.aftas.aftas.dto.UserDto;
 import com.ayoub.aftas.aftas.entities.Ranking;
 import com.ayoub.aftas.aftas.services.RankingService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.bind.annotation.RequestMethod;
 
 import java.util.List;
 
@@ -42,7 +40,7 @@ public class RankingController {
     }
 
     @GetMapping("/competitions/winners/{competitionId}")
-    public List<MemberDto> getWinners(@PathVariable Long competitionId){
+    public List<UserDto> getWinners(@PathVariable Long competitionId){
         return rankingService.getWinners(competitionId);
     }
 

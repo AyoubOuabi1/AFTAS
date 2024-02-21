@@ -1,8 +1,8 @@
 package com.ayoub.aftas.aftas.services.impl;
 
-import com.ayoub.aftas.aftas.dto.AuthenticateDto;
-import com.ayoub.aftas.aftas.dto.RegisterDto;
-import com.ayoub.aftas.aftas.dto.ResponseDto;
+import com.ayoub.aftas.aftas.Config.exceptions.InternalServerError;
+import com.ayoub.aftas.aftas.Config.exceptions.NotFoundException;
+import com.ayoub.aftas.aftas.dto.*;
 import com.ayoub.aftas.aftas.services.UserService;
 import jakarta.persistence.EntityNotFoundException;
 import jakarta.validation.ValidationException;
@@ -15,7 +15,9 @@ import com.ayoub.aftas.aftas.mappers.UserMapper;
 import com.ayoub.aftas.aftas.respositories.UserRepository;
 import com.ayoub.aftas.aftas.entities.*;
 
+import java.util.ArrayList;
 import java.util.Collections;
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -36,33 +38,91 @@ public class UserServiceImp implements UserService {
         return user;
     }
     @Override
-    public ResponseDto register(RegisterDto registerDto) throws ValidationException {
-        Optional<User> existingUser = this.userRepository.findByEmail(registerDto.getEmail());
+    public AuthResponse register(RequestRegisterDto requestRegisterDto) throws ValidationException {
+        Optional<User> existingUser = this.userRepository.findByEmail(requestRegisterDto.getEmail());
         if(existingUser.isPresent()) throw new ValidationException("This email already exists !");
         RoleEntity userRole = roleService.getRoleByName("USER");
 
         User user = User.builder()
-                .username(registerDto.getUsername())
-                .email(registerDto.getEmail())
+                .username(requestRegisterDto.getUsername())
+                .email(requestRegisterDto.getEmail())
+                .num(requestRegisterDto.getNum())
+                .name(requestRegisterDto.getName())
+                .familyName(requestRegisterDto.getFamilyName())
+                .accessionDate(requestRegisterDto.getAccessionDate())
+                .identityDocument(requestRegisterDto.getIdentityDocument())
+                .identityNumber(requestRegisterDto.getIdentityNumber())
+                .nationality(requestRegisterDto.getNationality())
                 .roles(Collections.singleton(userRole))
-                .password(passwordEncoder.encode(registerDto.getPassword()))
+                .password(passwordEncoder.encode(requestRegisterDto.getPassword()))
                 .build();
-        ResponseDto responseDto = userMapper.mapUserToResponseDTO(this.userRepository.save(user));
-        responseDto.setAccessToken(jwtService.generateToken(user));
-        return responseDto;
+        AuthResponse authResponse = userMapper.mapUserToResponseDTO(this.userRepository.save(user));
+        authResponse.setAccessToken(jwtService.generateToken(user));
+        return authResponse;
     }
 
     @Override
-    public ResponseDto authenticate(AuthenticateDto authenticateDto){
+    public AuthResponse authenticate(AuthenticateDto authenticateDto){
         this.authenticationManager.authenticate(
            new UsernamePasswordAuthenticationToken(authenticateDto.getEmail(), authenticateDto.getPassword())
         );
         User user = this.findUserByUsername(authenticateDto.getEmail());
-        ResponseDto responseDto = userMapper.mapUserToResponseDTO(user);
-        responseDto.setAccessToken(jwtService.generateToken(user));
+        AuthResponse authResponse = userMapper.mapUserToResponseDTO(user);
+        authResponse.setAccessToken(jwtService.generateToken(user));
 
-        return responseDto;
+        return authResponse;
+    }
+    @Override
+    public List<UserDto> getAll() {
+        List<UserDto> list = new ArrayList<>();
+        userRepository.findAll().forEach(user->{
+            list.add(userMapper.toDTO(user));
+        });
+        return  list;
     }
 
+    @Override
+    public UserDto getById(Long id)  {
+        if(id != null){
+            Optional<User> user= userRepository.findById(id);
+            if(user.isPresent()){
+                return userMapper.toDTO(user.get());
+            }else {
+                throw  new InternalServerError("Could not find member " + id);
+            }
+        }else {
+            throw  new NotFoundException("Id Could not be null ");
+        }
+
+    }
+
+    @Override
+    public List<UserDto> findMembersNotRankedInCompetition(Long competitionId) {
+        List<UserDto> list = new ArrayList<>();
+        userRepository.findUserNotRankedInCompetition(competitionId).forEach(user->{
+            list.add(userMapper.toDTO(user));
+        });
+        return  list;
+    }
+
+    @Override
+    public List<UserDto> findMembersRankedInCompetition(Long competitionId) {
+        List<UserDto> list = new ArrayList<>();
+        userRepository.findUserRankedInCompetition(competitionId).forEach(user->{
+            list.add(userMapper.toDTO(user));
+        });
+        return  list;
+    }
+
+    @Override
+    public UserDto update(Long id,String Role) {
+        Optional<User> user = userRepository.findById(id);
+        if(user.isPresent()){
+            user.get().getRoles().clear();
+            user.get().getRoles().add(roleService.getRoleByName(Role));
+            return userMapper.toDTO(userRepository.save(user.get()));
+        }
+        return null;
+    }
 
 }
