@@ -1,4 +1,4 @@
-package com.ayoub.aftas.aftas.auth.config;
+package com.ayoub.aftas.aftas.services.impl;
 
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
@@ -28,7 +28,7 @@ public class JwtService {
     }
 
     public Claims extractAllClaims(String jwtToken){
-        return Jwts.parserBuilder().setSigningKey(getSigningKey()).build().parseClaimsJws(jwtToken).getBody();
+        return Jwts.parserBuilder().setSigningKey(getSigningKey()).build(). parseClaimsJws(jwtToken).getBody();
     }
 
     public Key getSigningKey() {

@@ -1,5 +1,6 @@
 package com.ayoub.aftas.aftas.auth.config;
 
+import com.ayoub.aftas.aftas.services.impl.JwtService;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;

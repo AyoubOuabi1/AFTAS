@@ -10,6 +10,7 @@ import java.util.List;
 public interface UserService {
 
      User findUserByUsername(String username);
+     User findByEmail(String username);
      AuthResponse register(RequestRegisterDto requestRegisterDto);
      AuthResponse authenticate(AuthenticateDto authenticateDto);
 
@@ -20,4 +21,6 @@ public interface UserService {
     List<UserDto> findMembersRankedInCompetition(Long competitionId);
 
     UserDto update(Long id,String Role);
+
+    AuthResponse getRefreshToken(RefreshTokenRequestDTO refreshTokenRequestDTO);
 }

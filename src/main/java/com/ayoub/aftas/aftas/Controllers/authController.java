@@ -1,6 +1,7 @@
 package com.ayoub.aftas.aftas.Controllers;
 
  import com.ayoub.aftas.aftas.dto.AuthenticateDto;
+ import com.ayoub.aftas.aftas.dto.RefreshTokenRequestDTO;
  import com.ayoub.aftas.aftas.dto.RequestRegisterDto;
  import com.ayoub.aftas.aftas.dto.AuthResponse;
  import com.ayoub.aftas.aftas.services.UserService;
@@ -17,7 +18,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 
 @RestController
-@RequestMapping(APIVersion+"/auth/")
+@RequestMapping("api/v1/auth/")
 @RequiredArgsConstructor
 public class authController {
 
@@ -34,5 +35,8 @@ public class authController {
         return ResponseEntity.ok(userService.authenticate(authenticateDto));
     }
 
-
+    @PostMapping("/refreshToken")
+    public AuthResponse refreshToken(@RequestBody RefreshTokenRequestDTO refreshTokenRequestDTO){
+        return userService.getRefreshToken(refreshTokenRequestDTO);
+    }
 }

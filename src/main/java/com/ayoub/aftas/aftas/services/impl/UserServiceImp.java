@@ -7,10 +7,10 @@ import com.ayoub.aftas.aftas.services.UserService;
 import jakarta.persistence.EntityNotFoundException;
 import jakarta.validation.ValidationException;
 import lombok.RequiredArgsConstructor;
+import org.modelmapper.ModelMapper;
 import org.springframework.security.authentication.*;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
-import com.ayoub.aftas.aftas.auth.config.JwtService;
 import com.ayoub.aftas.aftas.mappers.UserMapper;
 import com.ayoub.aftas.aftas.respositories.UserRepository;
 import com.ayoub.aftas.aftas.entities.*;
@@ -30,6 +30,8 @@ public class UserServiceImp implements UserService {
     private final AuthenticationManager authenticationManager;
     private final RoleServiceImp roleService;
     private final UserMapper userMapper;
+    private final ModelMapper modelMapper;
+    private final RefreshTokenServiceImp refreshTokenService;
 
     @Override
     public User findUserByUsername(String username) throws EntityNotFoundException {
@@ -37,12 +39,17 @@ public class UserServiceImp implements UserService {
         if(user==null) throw new EntityNotFoundException("user not found !");
         return user;
     }
+
+    @Override
+    public User findByEmail(String username) {
+        return userRepository.findByEmail(username).get();
+    }
+
     @Override
     public AuthResponse register(RequestRegisterDto requestRegisterDto) throws ValidationException {
         Optional<User> existingUser = this.userRepository.findByEmail(requestRegisterDto.getEmail());
         if(existingUser.isPresent()) throw new ValidationException("This email already exists !");
         RoleEntity userRole = roleService.getRoleByName("USER");
-
         User user = User.builder()
                 .username(requestRegisterDto.getUsername())
                 .email(requestRegisterDto.getEmail())
@@ -56,8 +63,12 @@ public class UserServiceImp implements UserService {
                 .roles(Collections.singleton(userRole))
                 .password(passwordEncoder.encode(requestRegisterDto.getPassword()))
                 .build();
-        AuthResponse authResponse = userMapper.mapUserToResponseDTO(this.userRepository.save(user));
+        User savedUser = this.userRepository.save(user);
+        RefreshToken refreshToken = refreshTokenService.createRefreshToken(savedUser);
+        AuthResponse authResponse = userMapper.mapUserToResponseDTO(savedUser);
         authResponse.setAccessToken(jwtService.generateToken(user));
+        authResponse.setRefreshToken(refreshToken.getToken());
+        authResponse.setValided(true);
         return authResponse;
     }
 
@@ -67,9 +78,12 @@ public class UserServiceImp implements UserService {
            new UsernamePasswordAuthenticationToken(authenticateDto.getEmail(), authenticateDto.getPassword())
         );
         User user = this.findUserByUsername(authenticateDto.getEmail());
+        RefreshToken refreshToken = refreshTokenService.createRefreshToken(user);
+
         AuthResponse authResponse = userMapper.mapUserToResponseDTO(user);
         authResponse.setAccessToken(jwtService.generateToken(user));
-
+        authResponse.setRefreshToken(refreshToken.getToken());
+        authResponse.setValided(true);
         return authResponse;
     }
     @Override
@@ -123,6 +137,21 @@ public class UserServiceImp implements UserService {
             return userMapper.toDTO(userRepository.save(user.get()));
         }
         return null;
+    }
+
+    @Override
+    public AuthResponse getRefreshToken(RefreshTokenRequestDTO refreshTokenRequestDTO) {
+        return refreshTokenService.findByToken(refreshTokenRequestDTO.getToken())
+                .map(refreshTokenService::verifyExpiration)
+                .map(RefreshToken::getUser)
+                .map(user -> {
+                    AuthResponse authResponse = userMapper.mapUserToResponseDTO(this.userRepository.save(user));
+                    authResponse.setAccessToken(jwtService.generateToken(user));
+                    authResponse.setRefreshToken(refreshTokenRequestDTO.getToken());
+                    authResponse.setValided(true);
+                    return authResponse;
+                }).orElseThrow(() ->new RuntimeException("Refresh Token is not in DB..!!"));
+
     }
 
 }

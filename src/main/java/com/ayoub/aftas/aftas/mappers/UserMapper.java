@@ -20,7 +20,10 @@ public class UserMapper {
                 user.getUsername(),
                 user.getEmail(),
                 null,
+                null,
                 user.getRoles().stream().findFirst().map(RoleEntity::getName).orElse(null),
+                true,
+
                 permissionNames
         );
     }
