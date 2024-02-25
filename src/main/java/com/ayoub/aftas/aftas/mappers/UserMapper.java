@@ -22,7 +22,7 @@ public class UserMapper {
                 null,
                 null,
                 user.getRoles().stream().findFirst().map(RoleEntity::getName).orElse(null),
-                true,
+                user.isActive(),
 
                 permissionNames
         );
@@ -32,16 +32,15 @@ public class UserMapper {
         userDTO.setId(user.getId());
         userDTO.setUsername(user.getUsername());
         userDTO.setEmail(user.getEmail());
-        userDTO.setPassword(user.getPassword());
         userDTO.setNum(user.getNum());
         userDTO.setName(user.getName());
+        userDTO.setActive(user.isActive());
         userDTO.setFamilyName(user.getFamilyName());
         userDTO.setAccessionDate(user.getAccessionDate());
         userDTO.setNationality(user.getNationality());
         userDTO.setIdentityDocument(user.getIdentityDocument());
         userDTO.setIdentityNumber(user.getIdentityNumber());
         userDTO.setRole(user.getRoles().stream().findFirst().map(RoleEntity::getName).orElse(null));
-        userDTO.setPermissions(user.getPermissions().stream().map(PermissionEntity::getName).collect(Collectors.toSet()));
         return userDTO;
     }
 
@@ -50,9 +49,9 @@ public class UserMapper {
         user.setId(userDTO.getId());
         user.setUsername(userDTO.getUsername());
         user.setEmail(userDTO.getEmail());
-        user.setPassword(userDTO.getPassword());
         user.setNum(userDTO.getNum());
         user.setName(userDTO.getName());
+        user.setActive(userDTO.isActive());
         user.setFamilyName(userDTO.getFamilyName());
         user.setAccessionDate(userDTO.getAccessionDate());
         user.setNationality(userDTO.getNationality());

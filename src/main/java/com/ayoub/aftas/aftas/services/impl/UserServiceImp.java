@@ -9,16 +9,15 @@ import jakarta.validation.ValidationException;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.springframework.security.authentication.*;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import com.ayoub.aftas.aftas.mappers.UserMapper;
 import com.ayoub.aftas.aftas.respositories.UserRepository;
 import com.ayoub.aftas.aftas.entities.*;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 
 @Service
 @RequiredArgsConstructor
@@ -56,6 +55,7 @@ public class UserServiceImp implements UserService {
                 .num(requestRegisterDto.getNum())
                 .name(requestRegisterDto.getName())
                 .familyName(requestRegisterDto.getFamilyName())
+                .isActive(false)
                 .accessionDate(requestRegisterDto.getAccessionDate())
                 .identityDocument(requestRegisterDto.getIdentityDocument())
                 .identityNumber(requestRegisterDto.getIdentityNumber())
@@ -68,7 +68,6 @@ public class UserServiceImp implements UserService {
         AuthResponse authResponse = userMapper.mapUserToResponseDTO(savedUser);
         authResponse.setAccessToken(jwtService.generateToken(user));
         authResponse.setRefreshToken(refreshToken.getToken());
-        authResponse.setValided(true);
         return authResponse;
     }
 
@@ -83,7 +82,6 @@ public class UserServiceImp implements UserService {
         AuthResponse authResponse = userMapper.mapUserToResponseDTO(user);
         authResponse.setAccessToken(jwtService.generateToken(user));
         authResponse.setRefreshToken(refreshToken.getToken());
-        authResponse.setValided(true);
         return authResponse;
     }
     @Override
@@ -92,6 +90,10 @@ public class UserServiceImp implements UserService {
         userRepository.findAll().forEach(user->{
             list.add(userMapper.toDTO(user));
         });
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        User user = (User) authentication.getPrincipal() ;
+        UserDto userDto = userMapper.toDTO(user);
+        list.remove(userDto);
         return  list;
     }
 
@@ -140,18 +142,27 @@ public class UserServiceImp implements UserService {
     }
 
     @Override
-    public AuthResponse getRefreshToken(RefreshTokenRequestDTO refreshTokenRequestDTO) {
-        return refreshTokenService.findByToken(refreshTokenRequestDTO.getToken())
+    public AuthResponse getRefreshToken(String refreshTokenRequest) {
+        return refreshTokenService.findByToken(refreshTokenRequest)
                 .map(refreshTokenService::verifyExpiration)
                 .map(RefreshToken::getUser)
                 .map(user -> {
                     AuthResponse authResponse = userMapper.mapUserToResponseDTO(this.userRepository.save(user));
                     authResponse.setAccessToken(jwtService.generateToken(user));
-                    authResponse.setRefreshToken(refreshTokenRequestDTO.getToken());
-                    authResponse.setValided(true);
+                    authResponse.setRefreshToken(refreshTokenRequest);
                     return authResponse;
                 }).orElseThrow(() ->new RuntimeException("Refresh Token is not in DB..!!"));
 
+    }
+
+    @Override
+    public Map<String, String> updateStatus(Long id) {
+        User user = userRepository.findById(id).get();
+        user.setActive(true);
+        userRepository.save(user);
+        Map<String,String> status = new HashMap<>();
+        status.put("status","ok");
+        return status;
     }
 
 }

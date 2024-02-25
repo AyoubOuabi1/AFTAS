@@ -9,5 +9,7 @@ public interface RefreshTokenService {
     RefreshToken createRefreshToken(User user);
     Optional<RefreshToken> findByToken(String token);
 
+    RefreshToken findByUser(Long userId);
+
     RefreshToken verifyExpiration(RefreshToken token);
 }

@@ -36,7 +36,7 @@ public class authController {
     }
 
     @PostMapping("/refreshToken")
-    public AuthResponse refreshToken(@RequestBody RefreshTokenRequestDTO refreshTokenRequestDTO){
+    public AuthResponse refreshToken(@RequestBody String refreshTokenRequestDTO){
         return userService.getRefreshToken(refreshTokenRequestDTO);
     }
 }

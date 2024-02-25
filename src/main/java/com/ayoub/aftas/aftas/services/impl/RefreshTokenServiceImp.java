@@ -22,6 +22,15 @@ public class RefreshTokenServiceImp implements RefreshTokenService {
 
     @Override
     public RefreshToken createRefreshToken(User user) {
+        try {
+            RefreshToken oldRefresh = findByUser(user.getId());
+            if (oldRefresh != null) {
+                refreshTokenRepository.delete(oldRefresh);
+            }
+        }catch (Exception e) {
+            e.printStackTrace();
+        }
+
         RefreshToken refreshToken = RefreshToken.builder()
                 .user(user)
                 .token(UUID.randomUUID().toString())
@@ -34,6 +43,12 @@ public class RefreshTokenServiceImp implements RefreshTokenService {
     public Optional<RefreshToken> findByToken(String token) {
         return refreshTokenRepository.findByToken(token);
     }
+
+    @Override
+    public RefreshToken findByUser(Long userId) {
+        return refreshTokenRepository.findByUser(userId).get();
+    }
+
 
     @Override
     public RefreshToken verifyExpiration(RefreshToken token) {

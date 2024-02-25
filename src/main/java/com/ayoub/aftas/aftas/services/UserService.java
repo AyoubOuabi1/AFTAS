@@ -5,6 +5,7 @@ import com.ayoub.aftas.aftas.entities.User;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Map;
 
 @Service
 public interface UserService {
@@ -22,5 +23,7 @@ public interface UserService {
 
     UserDto update(Long id,String Role);
 
-    AuthResponse getRefreshToken(RefreshTokenRequestDTO refreshTokenRequestDTO);
+    AuthResponse getRefreshToken(String refreshTokenRequestDTO);
+
+    Map<String,String> updateStatus(Long id);
 }

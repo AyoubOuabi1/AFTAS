@@ -20,11 +20,11 @@ public class UserDto {
     private String email;
 
 
-    private String password;
-
     private Integer num;
 
     private String name;
+
+    private boolean isActive;
 
     private String familyName;
 

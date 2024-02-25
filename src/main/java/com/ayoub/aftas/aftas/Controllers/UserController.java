@@ -6,6 +6,7 @@ import com.ayoub.aftas.aftas.services.UserService;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequestMapping(Constant.APIVersion + "/user")
@@ -17,12 +18,18 @@ public class UserController {
         this.userService = userService;
     }
 
-    /*@GetMapping("")
-    public List<MemberDto> get(){
-        return memberService.getAll();
-    }*/
+    @GetMapping("")
+    public List<UserDto> getAll(){
+        return userService.getAll();
+    }
+
+    @PutMapping("/updatestatus/{id}")
+    public Map<String, String> updateStatus (@PathVariable Long id){
+        return userService.updateStatus(id);
+    }
+
     @GetMapping("/competitions")
-    public List<UserDto> get(@RequestParam Long competitionId){
+    public List<UserDto> findMembersNotRankedInCompetition(@RequestParam Long competitionId){
         return userService.findMembersNotRankedInCompetition(competitionId);
     }
 
@@ -31,10 +38,7 @@ public class UserController {
         return userService.findMembersRankedInCompetition(competitionId);
     }
 
-    @GetMapping("")
-    public List<UserDto> get(){
-        return userService.getAll();
-    }
+
     @GetMapping("/{id}")
     public UserDto getById(@PathVariable Long id){
         return userService.getById(id);

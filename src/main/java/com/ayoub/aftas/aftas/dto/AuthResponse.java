@@ -17,6 +17,6 @@ public class AuthResponse {
     private String accessToken;
     private String refreshToken;
     private String role;
-    private boolean isValided;
+    private boolean isActive;
     private Set<String> permissions;
 }
