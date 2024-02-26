@@ -1,7 +1,9 @@
 package com.ayoub.aftas.aftas;
 
+import com.ayoub.aftas.aftas.dto.CompetitionDto;
 import com.ayoub.aftas.aftas.entities.PermissionEntity;
 import com.ayoub.aftas.aftas.entities.RoleEntity;
+import com.ayoub.aftas.aftas.services.CompetitionService;
 import com.ayoub.aftas.aftas.services.PermissionService;
 import com.ayoub.aftas.aftas.services.RoleService;
 import org.modelmapper.ModelMapper;
@@ -17,6 +19,11 @@ import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 import org.springframework.web.filter.CorsFilter;
 
+import java.sql.Time;
+import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Random;
 import java.util.Set;
 
 @RestController
@@ -25,10 +32,9 @@ import java.util.Set;
 public class AftasApplication {
 
     @Autowired
-    private  PermissionService permissionService;
+    private CompetitionService competitionService;
 
-    @Autowired
-    private  RoleService roleService;
+
 
 
     public static void main(String[] args) {
@@ -49,65 +55,35 @@ public class AftasApplication {
     /*@Bean
     CommandLineRunner configRunner(){
         return (args) -> {
-            PermissionEntity crudFish = permissionService.savePermission(
-                    PermissionEntity.builder()
-                            .name("CRUD_FISH")
-                            .build()
-            );
-            PermissionEntity readCompetitions = permissionService.savePermission(
-                    PermissionEntity.builder()
-                            .name("READ_COMPETITIONS")
-                            .build()
-            );
-            PermissionEntity insertUpdateDeleteCompetitions = permissionService.savePermission(
-                    PermissionEntity.builder()
-                            .name("INSERT_UPDATE_DELETE_COMPETITIONS")
-                            .build()
-            );
-
-            PermissionEntity crudLevel = permissionService.savePermission(
-                    PermissionEntity.builder()
-                            .name("CRUD_LEVEL")
-                            .build()
-            );
-
-            PermissionEntity crudMember = permissionService.savePermission(
-                    PermissionEntity.builder()
-                            .name("CRUD_MEMBER")
-                            .build()
-            );
-
-            PermissionEntity crudRanking = permissionService.savePermission(
-                    PermissionEntity.builder()
-                            .name("CRUD_RANKING")
-                            .build()
-            );
-            PermissionEntity crudHunting = permissionService.savePermission(
-                    PermissionEntity.builder()
-                            .name("CRUD_HUNTING")
-                            .build()
-            );
-
-            roleService.saveRole(
-                    RoleEntity.builder()
-                         .name("USER")
-                         .permissions(Set.of(readCompetitions,crudRanking))
-                         .build()
-            );
-            roleService.saveRole(
-                    RoleEntity.builder()
-                         .name("MANAGER")
-                         .permissions(Set.of(crudFish,readCompetitions,insertUpdateDeleteCompetitions,crudHunting,crudLevel,crudMember,crudRanking))
-                         .build()
-            );
-            roleService.saveRole(
-                    RoleEntity.builder()
-                       .name("JURY")
-                       .permissions(Set.of(readCompetitions,insertUpdateDeleteCompetitions,crudHunting,crudRanking))
-                       .build()
-            );
+            List<CompetitionDto> competitionList = seed();
+            for (CompetitionDto competition : competitionList) {
+                competitionService.save(competition);
+            }
         };
     }*/
+    public static List<CompetitionDto> seed() {
+        List<CompetitionDto> competitions = new ArrayList<>();
+
+        Random random = new Random();
+
+        for (int i = 0; i < 20; i++) {
+            CompetitionDto competition = CompetitionDto.builder()
+                    .id((long) (i + 1))
+                    .code("CODE" + (i + 1))
+                    .date(LocalDate.now().plusDays((i + 1)))
+                    .startTime(new Time(System.currentTimeMillis())) // Current time
+                    .endTime(new Time(System.currentTimeMillis() + 3600000*12)) // End time after 1 hour
+                    .numberOfParticipants(random.nextInt(100) + 1) // Random number of participants between 1 and 100
+                    .location("Location " + (i + 1))
+                    .status("open")
+                    .amount(random.nextInt() * 2) // Random amount between 0 and 100
+                    .build();
+
+            competitions.add(competition);
+        }
+
+        return competitions;
+    }
 
     @Bean
     public ModelMapper modelMapper() {

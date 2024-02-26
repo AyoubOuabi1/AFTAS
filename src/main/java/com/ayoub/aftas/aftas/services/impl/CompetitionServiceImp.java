@@ -45,8 +45,8 @@ public class CompetitionServiceImp implements CompetitionService{
 
     @Override
     public CompetitionDto save(CompetitionDto competitionDto) throws InternalServerError {
-        LocalDate localDate = LocalDate.now().plus(2, ChronoUnit.DAYS);
-        if(competitionDto.getDate().isAfter(localDate)) {
+       // LocalDate localDate = LocalDate.now().plus(2, ChronoUnit.DAYS);
+        //if(competitionDto.getDate().isAfter(localDate)) {
             List<CompetitionDto> competitionList = getAll();
             boolean isValid = competitionList.stream().anyMatch(competitionDto1 -> (
                     competitionDto1.getDate().isEqual(competitionDto.getDate()))
@@ -66,10 +66,10 @@ public class CompetitionServiceImp implements CompetitionService{
             } else {
                 throw new InternalServerError("Competition with the same date already exists");
             }
-        }else {
-            throw new InternalServerError("you can create a new Competition only before  48h of start date ");
+       // }else {
+         //   throw new InternalServerError("you can create a new Competition only before  48h of start date ");
 
-        }
+        //}
     }
     private void updateCompetitionStatus() {
         List<Competition> competitionList = competitionRepository.findAll();
